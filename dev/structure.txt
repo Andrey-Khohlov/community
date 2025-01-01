@@ -1,0 +1,62 @@
+chat_project/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                # Основной файл запуска приложения FastAPI
+│   ├── config.py              # Настройки приложения (Kafka, PostgreSQL, и т.д.)
+│   ├── api/                   # Маршруты API
+│   │   ├── __init__.py
+│   │   ├── v1/                # Версия API (можно расширять)
+│   │   │   ├── __init__.py
+│   │   │   ├── endpoints/     # Конкретные конечные точки API
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── users.py   # Эндпоинты для пользователей
+│   │   │   │   ├── chats.py   # Эндпоинты для чатов
+│   │   │   │   ├── messages.py # Эндпоинты для сообщений
+│   │   │   ├── dependencies.py # Общие зависимости (например, зависимости для DI)
+│   ├── db/                    # Работа с базой данных
+│   │   ├── __init__.py
+│   │   ├── models/            # SQLAlchemy модели
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── chat.py
+│   │   │   ├── message.py
+│   │   ├── schemas/           # Pydantic схемы
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── chat.py
+│   │   │   ├── message.py
+│   │   ├── database.py        # Инициализация подключения к базе данных
+│   ├── services/              # Логика, связанная с бизнес-процессами
+│   │   ├── __init__.py
+│   │   ├── user_service.py    # Логика для пользователей
+│   │   ├── chat_service.py    # Логика для чатов
+│   │   ├── message_service.py # Логика для сообщений
+│   ├── kafka/                 # Работа с Kafka
+│   │   ├── __init__.py
+│   │   ├── producer.py        # Kafka Producer
+│   │   ├── consumer.py        # Kafka Consumer
+│   │   ├── topics.py          # Конфигурация тем Kafka
+│   ├── utils/                 # Утилиты и вспомогательные функции
+│       ├── __init__.py
+│       ├── logger.py          # Логирование
+│       ├── validators.py      # Проверки и валидаторы
+│
+├── tests/                     # Тесты
+│   ├── __init__.py
+│   ├── test_main.py           # Тестирование FastAPI приложения
+│   ├── api/                   # Тесты API
+│   ├── services/              # Тесты сервисов
+│   ├── kafka/                 # Тесты Kafka
+│   ├── db/                    # Тесты базы данных
+│
+├── migrations/                # Миграции базы данных (например, Alembic)
+│   ├── env.py
+│   ├── README
+│   ├── script.py.mako
+│   ├── versions/
+│
+├── requirements.txt           # Зависимости проекта
+├── docker-compose.yml         # Конфигурация Docker Compose для PostgreSQL, Kafka и приложения
+├── Dockerfile                 # Dockerfile для FastAPI
+├── .env                       # Конфигурация окружения
+├── README.md                  # Описание проекта

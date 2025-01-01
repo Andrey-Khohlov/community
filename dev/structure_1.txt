@@ -1,0 +1,66 @@
+chat_project/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                # Основной файл запуска FastAPI
+│   ├── config.py              # Конфигурация проекта
+│   ├── api/                   # Маршруты API
+│   │   ├── __init__.py
+│   │   ├── v1/
+│   │       ├── __init__.py
+│   │       ├── endpoints/
+│   │           ├── users.py
+│   │           ├── chats.py
+│   │           ├── messages.py
+│   ├── db/                    # Работа с базой данных
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── chat.py
+│   │   │   ├── message.py
+│   │   ├── schemas/
+│   │   │   ├── __init__.py
+│   │   │   ├── user.py
+│   │   │   ├── chat.py
+│   │   │   ├── message.py
+│   │   ├── database.py
+│   ├── services/              # Логика бэкенда
+│   │   ├── __init__.py
+│   │   ├── user_service.py
+│   │   ├── chat_service.py
+│   │   ├── message_service.py
+│   ├── kafka/                 # Работа с Kafka
+│   │   ├── __init__.py
+│   │   ├── producer.py
+│   │   ├── consumer.py
+│   │   ├── topics.py
+│   ├── utils/                 # Утилиты
+│       ├── __init__.py
+│       ├── logger.py
+│       ├── validators.py
+│
+├── streamlit/                 # Интерфейс Streamlit
+│   ├── __init__.py
+│   ├── chat_app.py            # Основное приложение чата на Streamlit
+│   ├── user_dashboard.py      # (Пример) Дашборд для пользователя
+│   ├── admin_dashboard.py     # (Пример) Дашборд администратора
+│
+├── tests/                     # Тесты
+│   ├── __init__.py
+│   ├── test_main.py
+│   ├── api/
+│   ├── services/
+│   ├── kafka/
+│   ├── db/
+│
+├── migrations/                # Миграции базы данных
+│   ├── env.py
+│   ├── script.py.mako
+│   ├── versions/
+│
+├── requirements.txt           # Зависимости проекта
+├── docker-compose.yml         # Docker Compose конфигурация
+├── Dockerfile                 # Dockerfile для FastAPI
+├── Dockerfile.streamlit       # Dockerfile для Streamlit
+├── .env                       # Настройки окружения
+├── README.md                  # Документация проекта

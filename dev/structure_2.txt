@@ -1,0 +1,70 @@
+coffee_social_network/
+│
+├── app/
+│   ├── api/
+│   │   ├── v1/
+│   │   │   ├── endpoints/
+│   │   │   │   ├── auth.py
+│   │   │   │   ├── coffee.py
+│   │   │   │   ├── reviews.py
+│   │   │   │   ├── chats.py
+│   │   │   │   └── users.py
+│   │   │   ├── __init__.py
+│   │   │   ├── dependencies.py
+│   │   │   └── schemas.py
+│   │   └── __init__.py
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── security.py
+│   │   └── utils.py
+│   ├── db/
+│   │   ├── models/
+│   │   │   ├── user.py
+│   │   │   ├── coffee.py
+│   │   │   ├── review.py
+│   │   │   ├── chat.py
+│   │   │   └── message.py
+│   │   ├── session.py
+│   │   ├── migrations/
+│   │   └── __init__.py
+│   ├── services/
+│   │   ├── coffee_service.py
+│   │   ├── chat_service.py
+│   │   ├── review_service.py
+│   │   └── user_service.py
+│   ├── tasks/
+│   │   ├── celery_app.py
+│   │   ├── notification_tasks.py
+│   │   └── __init__.py
+│   ├── main.py
+│   └── __init__.py
+├── frontend/
+│   ├── components/
+│   │   ├── chat_ui.py
+│   │   ├── coffee_list_ui.py
+│   │   ├── login_ui.py
+│   │   └── profile_ui.py
+│   ├── app.py  # Главная точка входа для Flet-приложения
+│   ├── theme.py  # Общий стиль
+│   └── utils.py  # Утилиты для запросов к API
+├── tests/
+│   ├── test_api/
+│   │   ├── test_coffee.py
+│   │   ├── test_reviews.py
+│   │   ├── test_chats.py
+│   │   └── test_users.py
+│   ├── __init__.py
+│   └── conftest.py
+├── docker/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── celery/
+│       └── celerybeat_schedule.db
+├── scripts/
+│   ├── init_db.py
+│   ├── seed_data.py
+│   └── run_celery_worker.sh
+├── .env
+├── requirements.txt
+├── README.md
+└── alembic.ini
