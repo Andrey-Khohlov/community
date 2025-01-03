@@ -8,6 +8,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import uvicorn
 
 from config import settings
+from app.db.models.coffee import CoffeesAddModel, Base
 
 app = FastAPI()
 
@@ -19,39 +20,50 @@ async def get_session():
     async with new_async_session() as session:
         yield session
 
+SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
-class Base(DeclarativeBase):
-    pass
+class CoffeesAddSchema(BaseModel):
+    roaster: str
+    roasting_level: str
+    title: str
+    description: str
+    price: int
+    weight: int
+    q_grade_rating: float
+    origin: str
+    region: str
+    farm: str
+    farmer: str
+    variety: str
+    processing: str
+    height_min: int
+    height_max: int
+    yield_: int
+    rating: float
+    reviews: int
+    comments: int
+    pack_img: str
+    created_at: str
 
+class CoffeesSchema(CoffeesAddSchema):
+    id: int
 
-class CoffeeChatsModel(Base):
-    __tablename__: str = "CoffeeChats"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str]
-    origin: Mapped[str]
-    roast_level: Mapped[str]
-    flavor_profile: Mapped[str]
-    description: Mapped[str]
-    created_at: Mapped[str]
-''' 
--- Таблица сортов кофе, которые одновременно являются темами обсуждений
-CREATE TABLE CoffeeChats (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE, -- Название сорта кофе
-    origin VARCHAR(100),              -- Страна происхождения
-    roast_level VARCHAR(50),          -- Уровень обжарки: светлая, средняя, темная
-    flavor_profile TEXT,              -- Профиль вкуса: "фруктовый, ореховый"
-    description TEXT,                 -- Дополнительное описание сорта
-    created_at TIMESTAMP DEFAULT NOW()
-);
-'''
 
 @app.post("/setup")
 async def setup_database():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
+
+    return {"Ok": True}
+
+@app.post("/add_coffee")
+async def add_coffee(coffee: CoffeesAddSchema, session: SessionDep):
+    new_coffee = CoffeesAddModel(
+        **coffee.model_dump(),
+    )
+    session.add(new_coffee)
+    await session.commit()
 
     return {"Ok": True}
 

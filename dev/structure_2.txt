@@ -68,3 +68,21 @@ coffee_social_network/
 ├── requirements.txt
 ├── README.md
 └── alembic.ini
+
+
+--------
+
+├── app/
+│   ├── api/
+│   ├── db/
+│   │   ├── models/
+│   │   │   ├── user.py
+│   │   │   ├── coffee.py
+│   │   │   ├── review.py
+│   │   │   ├── chat.py
+│   │   │   └── message.py
+│   │   ├── session.py
+│   │   ├── migrations/
+│   │   └── __init__.py
+│   ├── main.py
+│   └── __init__.py

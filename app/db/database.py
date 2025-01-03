@@ -21,20 +21,20 @@ async_engine = create_async_engine(
     # max_overflow=10,
 )
 
-with sync_engine.connect() as conn:
-    res = conn.execute(text("SELECT VERSION()"))
-    print(f"{res.all()=}")
+# with sync_engine.connect() as conn:
+#     res = conn.execute(text("SELECT VERSION()"))
+#     print(f"{res.all()=}")
+#
+# async def get_123():
+#     async with async_engine.begin() as conn:
+#         res = await conn.execute(text("SELECT VERSION()"))
+#         print(f"{res.all()=}")
+# asyncio.run(get_123())
 
-async def get_123():
-    async with async_engine.begin() as conn:
-        res = await conn.execute(text("SELECT VERSION()"))
-        print(f"{res.all()=}")
-asyncio.run(get_123())
 
-
-# new_async_session = async_sessionmaker(
-#     async_engine, expire_on_commit=False, class_=AsyncSession
-# )
-# async def get_session():
-#     async with new_async_session() as session:
-#         yield session
+new_async_session = async_sessionmaker(
+    async_engine, expire_on_commit=False, class_=AsyncSession
+)
+async def get_session():
+    async with new_async_session() as session:
+        yield session
