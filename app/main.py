@@ -57,7 +57,7 @@ async def setup_database():
 
     return {"Ok": True}
 
-@app.post("/add_coffee")
+@app.post("/coffee")
 async def add_coffee(coffee: CoffeesAddSchema, session: SessionDep):
     new_coffee = CoffeesAddModel(
         **coffee.model_dump(),
@@ -67,6 +67,11 @@ async def add_coffee(coffee: CoffeesAddSchema, session: SessionDep):
 
     return {"Ok": True}
 
+@app.get("/coffee")
+async def get_coffee(session: SessionDep):
+    query = select(CoffeesAddModel)
+    coffee = await session.execute(query)
+    return {"Ok": coffee.scalars().all()}
 
 if __name__ == "__main__":
     # uvicorn.run('main:app', host="0.0.0.0", port=80, reload=True)
