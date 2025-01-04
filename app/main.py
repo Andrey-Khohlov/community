@@ -7,47 +7,13 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import uvicorn
 
+from app.db.sessions import engine, SessionDep
+from app.schemas.coffees import CoffeesAddSchema
+from app.db.models.coffees import CoffeesAddModel, Base
 from config import settings
-from app.db.models.coffee import CoffeesAddModel, Base
+
 
 app = FastAPI()
-
-engine = create_async_engine(settings.DATABASE_URL_asyncpg, echo=False)
-
-new_async_session = async_sessionmaker(engine, expire_on_commit=False)
-
-async def get_session():
-    async with new_async_session() as session:
-        yield session
-
-SessionDep = Annotated[AsyncSession, Depends(get_session)]
-
-class CoffeesAddSchema(BaseModel):
-    roaster: str
-    roasting_level: str
-    title: str
-    description: str
-    price: int
-    weight: int
-    q_grade_rating: float
-    origin: str
-    region: str
-    farm: str
-    farmer: str
-    variety: str
-    processing: str
-    height_min: int
-    height_max: int
-    yield_: int
-    rating: float
-    reviews: int
-    comments: int
-    pack_img: str
-    created_at: str
-
-class CoffeesSchema(CoffeesAddSchema):
-    id: int
-
 
 @app.post("/setup")
 async def setup_database():

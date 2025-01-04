@@ -11,7 +11,12 @@ coffee_social_network/
 │   │   │   │   └── users.py
 │   │   │   ├── __init__.py
 │   │   │   ├── dependencies.py
-│   │   │   └── schemas.py
+│   │   │   └── schemas/
+│   │   │       ├── user.py
+│   │   │       ├── coffee.py
+│   │   │       ├── review.py
+│   │   │       ├── chat.py
+│   │   │       └── message.py
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── config.py
