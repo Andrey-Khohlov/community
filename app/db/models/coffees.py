@@ -1,9 +1,9 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import  Mapped, mapped_column
 
-from app.db.models import Base
+from app.db.models import Model
 
 
-class CoffeesAddModel(Base):
+class CoffeesAddModel(Model):
     __tablename__: str = "coffees"
     id: Mapped[int] = mapped_column(primary_key=True)
     roaster: Mapped[str]
@@ -28,7 +28,7 @@ class CoffeesAddModel(Base):
     pack_img: Mapped[str]
     created_at: Mapped[str]
 
-class CoffeeChatsModel(Base):
+class CoffeeChatsModel(Model):
     """ Создание таблицы
     -- Таблица сортов кофе, которые одновременно являются темами обсуждений
     CREATE TABLE CoffeeChats (
