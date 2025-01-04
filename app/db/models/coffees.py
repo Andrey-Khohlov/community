@@ -1,8 +1,7 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+from app.db.models import Base
 
-class Base(DeclarativeBase):
-    pass
 
 class CoffeesAddModel(Base):
     __tablename__: str = "coffees"

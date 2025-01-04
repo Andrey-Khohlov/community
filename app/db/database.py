@@ -7,19 +7,19 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import settings
 
-sync_engine = create_engine(
-    url=settings.DATABASE_URL_psycopg,
-    echo=True,
-    # pool_size=5,
-    # max_overflow=10,
-)
-
-async_engine = create_async_engine(
-    url=settings.DATABASE_URL_asyncpg,
-    echo=True,
-    # pool_size=5,
-    # max_overflow=10,
-)
+# sync_engine = create_engine(
+#     url=settings.DATABASE_URL_psycopg,
+#     echo=True,
+#     # pool_size=5,
+#     # max_overflow=10,
+# )
+#
+# async_engine = create_async_engine(
+#     url=settings.DATABASE_URL_asyncpg,
+#     echo=True,
+#     # pool_size=5,
+#     # max_overflow=10,
+# )
 
 # with sync_engine.connect() as conn:
 #     res = conn.execute(text("SELECT VERSION()"))
@@ -32,9 +32,9 @@ async_engine = create_async_engine(
 # asyncio.run(get_123())
 
 
-new_async_session = async_sessionmaker(
-    async_engine, expire_on_commit=False, class_=AsyncSession
-)
-async def get_session():
-    async with new_async_session() as session:
-        yield session
+# new_async_session = async_sessionmaker(
+#     async_engine, expire_on_commit=False, class_=AsyncSession
+# )
+# async def get_session():
+#     async with new_async_session() as session:
+#         yield session

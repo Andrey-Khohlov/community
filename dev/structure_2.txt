@@ -11,12 +11,6 @@ coffee_social_network/
 │   │   │   │   └── users.py
 │   │   │   ├── __init__.py
 │   │   │   ├── dependencies.py
-│   │   │   └── schemas/
-│   │   │       ├── user.py
-│   │   │       ├── coffee.py
-│   │   │       ├── review.py
-│   │   │       ├── chat.py
-│   │   │       └── message.py
 │   │   └── __init__.py
 │   ├── core/
 │   │   ├── config.py
@@ -32,6 +26,12 @@ coffee_social_network/
 │   │   ├── session.py
 │   │   ├── migrations/
 │   │   └── __init__.py
+│   ├── schemas/
+│   │   ├── user.py
+│   │   ├── coffee.py
+│   │   ├── review.py
+│   │   ├── chat.py
+│   │   └── message.py
 │   ├── services/
 │   │   ├── coffee_service.py
 │   │   ├── chat_service.py
