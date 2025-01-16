@@ -5,7 +5,7 @@ from fastapi import  FastAPI
 
 import uvicorn
 
-from app.api.v1.endpoints import coffees, users
+from app.api.v1.endpoints import coffees, users, reviews, comments
 from app.db.init_db import setup_database, insert_init_data
 
 
@@ -26,6 +26,9 @@ app = FastAPI(lifespan=lifespan)
 # Подключаем роутеры
 app.include_router(coffees.router, prefix="/v1/coffees", tags=["coffees"])
 app.include_router(users.router, prefix="/v1/users", tags=["users"])
+app.include_router(reviews.router, prefix="/v1/reviews", tags=["reviews"])
+app.include_router(comments.router, prefix="/v1/comments", tags=["comments"])
+
 
 if __name__ == "__main__":
     # uvicorn.run('main:app', host="0.0.0.0", port=80, reload=True)

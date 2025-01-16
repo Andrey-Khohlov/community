@@ -1,13 +1,13 @@
 from sqlalchemy.orm import  Mapped, mapped_column
 
-from app.db.models import Model
+from app.db.models import Model, intpk, created_at, RoastingLevel
 
 
 class CoffeesAddModel(Model):
     __tablename__: str = "coffees"
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[intpk]
     roaster: Mapped[str]
-    roasting_level: Mapped[str]
+    roasting_level: Mapped[RoastingLevel]
     title: Mapped[str]
     description: Mapped[str]
     price: Mapped[int]
@@ -26,7 +26,7 @@ class CoffeesAddModel(Model):
     reviews: Mapped[int]
     comments: Mapped[int]
     pack_img: Mapped[str]
-    created_at: Mapped[str]
+    created_at: Mapped[created_at]
 
 class CoffeeChatsModel(Model):
     """ Создание таблицы

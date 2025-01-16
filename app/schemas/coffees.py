@@ -22,7 +22,8 @@ class CoffeesAddSchema(BaseModel):
     reviews: int
     comments: int
     pack_img: str
-    created_at: str
+
 
 class CoffeesSchema(CoffeesAddSchema):
     id: int
+    created_at: str
