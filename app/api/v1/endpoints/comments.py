@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from app.db.sessions import SessionDep
 from app.schemas.comments import CommentsAddSchema
@@ -21,6 +22,7 @@ async def add_comment(comment: CommentsAddSchema, session: SessionDep):
 async def get_comment(session: SessionDep, coffee_id: int):
     query = (select(CommentsAddModel)
              .filter(CommentsAddModel.product_id == coffee_id)
+             .options(joinedload(CommentsAddModel.user))
              )
     query_coffee = select(CoffeesAddModel).filter(CoffeesAddModel.id == coffee_id)
     comment = await session.execute(query)
