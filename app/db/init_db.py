@@ -6,8 +6,9 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.db.models import Model, RoastingLevel
 from app.db.models.coffees import CoffeesAddModel
 from app.db.models.comments import CommentsAddModel
-from app.db.models.reviews import ReviewsAddModel
 from app.db.models.users import UsersAddModel
+from app.db.models.reviews import ReviewsAddModel
+# from app.db.models.users import UsersAddModel
 from app.db.sessions import engine, SessionDep, get_session, new_async_session
 
 coffe_dict = [

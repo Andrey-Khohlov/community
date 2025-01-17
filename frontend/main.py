@@ -6,9 +6,10 @@ import flet as ft
 API_URL = "http://127.0.0.1:8000"
 
 def main(page: ft.Page):
+    coffee_id = 1
     # Запрос к API
     try:
-        response = httpx.get(f"{API_URL}/v1/reviews/reviews/", follow_redirects=True)
+        response = httpx.get(f"{API_URL}/v1/comments/{coffee_id}", follow_redirects=True)
         response.raise_for_status()  # Проверяем успешность запроса
     except httpx.RequestError as e:
         page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
@@ -20,34 +21,47 @@ def main(page: ft.Page):
     # Декодирование JSON-ответа
     try:
         response_data = response.json()  # Преобразуем JSON в Python-объект
-        coffee_reviews = response_data.get("Ok", [])  # Извлекаем список отзывов
+        comments = response_data.get("Ok", [])  # Извлекаем список отзывов
+        coffee = response_data.get("coffee", {})
     except ValueError as e:
         page.add(ft.Text(f"Failed to parse JSON: {e}", color="red"))
         return
 
     # Убедитесь, что это список
-    if not isinstance(coffee_reviews, list):
-        page.add(ft.Text("Error: Expected a list of coffee reviews", color="red"))
+    if not isinstance(comments, list):
+        page.add(ft.Text("Error: Expected a list of comment reviews", color="red"))
         return
 
     # Отображение данных
-    for coffee in coffee_reviews:
-        if isinstance(coffee, dict):  # Убедиться, что элемент - словарь
+    page.add(
+        ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}", weight="bold"),
+        ft.Text(f"Ratings: {coffee.get('q_grade_rating', 'N/A')}", color="green"),
+        ft.Text(f"Price: {coffee.get('price', 'N/A')}", color="green"),
+        ft.Text(f"Origin: {coffee.get('origin', 'N/A')}", color="green"),
+        ft.Text(f"Region: {coffee.get('region', 'N/A')}", color="green"),
+        ft.Text(f"Farm: {coffee.get('farm', 'N/A')}", color="green"),
+        ft.Text(f"Farmer: {coffee.get('farmer', 'N/A')}", color="green"),
+        ft.Text(f"Variety: {coffee.get('variety', 'N/A')}", color="green"),
+        ft.Text(f"Processing: {coffee.get('processing', 'N/A')}", color="green"),
+        ft.Text(f"Height: {coffee.get('height_min', 'N/A')} - {coffee.get('height_max', 'N/A')}", color="green"),
+        ft.Text(f"Yield: {coffee.get('yield_', 'N/A')}", color="green"),
+        ft.Text(f"Rating: {coffee.get('rating', 'N/A')}", color="green"),
+        ft.Text(f"Reviews: {coffee.get('reviews', 'N/A')}", color="green"),
+        ft.Text(f"Comments: {coffee.get('comments', 'N/A')}", color="green"),
+        ft.Text(f"Pack image: {coffee.get('pack_img', 'N/A')}", color="green"),
+        ft.Text(""),
+    )
+    for comment in comments:
+        if isinstance(comment, dict):  # Убедиться, что элемент - словарь
             page.add(
                 ft.Column(
                     [
-                        ft.Text(f"ID: {coffee.get('id', 'N/A')}", size=20, weight="bold"),
-                        # ft.Text(f"Method: {coffee.get('comment', 'Unknown')}"),
-                        ft.Text(f"Method: {coffee.get('method', 'Unknown')}"),
-                        ft.Text(f"Tags: {coffee.get('tags', 'No tags')}"),
-                        ft.Text(f"Rating: {coffee.get('rating_4', 'No rating')}"),
-                        ft.Text(f"Water: {coffee.get('water', 'Unknown')}"),
-                        ft.Text(f"Temperature: {coffee.get('temperature', 'N/A')}°C"),
+                        ft.Text(f"{comment.get('user_id', 'N/A')}: {comment.get('content', 'Unknown')}"),
                     ],
                     spacing=10
                 )
             )
         else:
-            page.add(ft.Text(f"Invalid data format: {coffee}", color="orange"))
+            page.add(ft.Text(f"Invalid data format: {comment}", color="orange"))
 
 ft.app(target=main)

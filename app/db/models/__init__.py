@@ -6,6 +6,7 @@ from sqlalchemy import text, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import DeclarativeBase, mapped_column
 
+
 # Создание базового класса для всех моделей
 # Model = declarative_base()
 intpk = Annotated[int, mapped_column(primary_key=True)]
