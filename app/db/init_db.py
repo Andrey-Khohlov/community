@@ -145,6 +145,9 @@ async def insert_init_data():
         session.add_all([user1, user2])
         session.add_all(coffees)
         session.add_all(reviews)
-        session.add_all(comments)
         await session.commit()
+        for comment in comments:
+            session.add(comment)
+            await session.commit()
+
     return {"Data has been inserted": True}

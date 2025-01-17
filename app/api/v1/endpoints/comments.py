@@ -22,7 +22,8 @@ async def add_comment(comment: CommentsAddSchema, session: SessionDep):
 async def get_comment(session: SessionDep, coffee_id: int):
     query = (select(CommentsAddModel)
              .filter(CommentsAddModel.product_id == coffee_id)
-             .options(joinedload(CommentsAddModel.user))
+             .options(joinedload(CommentsAddModel.user))  # Жадная загрузка пользователя
+             .order_by(CommentsAddModel.created_at)
              )
     query_coffee = select(CoffeesAddModel).filter(CoffeesAddModel.id == coffee_id)
     comment = await session.execute(query)
