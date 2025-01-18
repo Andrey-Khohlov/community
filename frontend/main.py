@@ -3,9 +3,17 @@ import flet as ft
 
 # https://github.com/flet-dev/examples/tree/main/python/tutorials/chat
 
+class Message:
+    def __init__(self, user: str, text: str):
+        self.user = user
+        self.text = text
+
+
 API_URL = "http://127.0.0.1:8000"
 
 def main(page: ft.Page):
+    page.theme_mode = ft.ThemeMode.DARK
+
     coffee_id = 1
     # Запрос к API
     try:
@@ -32,6 +40,8 @@ def main(page: ft.Page):
         page.add(ft.Text("Error: Expected a list of comment reviews", color="red"))
         return
 
+    # Заголовок
+    page.title = f"чат о кофеёчке {coffee.get('title', 'None')}"
 
     # Создаем четыре столбца
     column1 = ft.Column(
@@ -76,29 +86,78 @@ def main(page: ft.Page):
     )
 
     # Размещаем столбцы в строке
-    row = ft.Row(
+    coffee_description = ft.Row(
         controls=[column1, column2, column3, column4],
         spacing=20,  # Отступ между столбцами
         alignment=ft.MainAxisAlignment.START,  # Выравнивание по левому краю
     )
 
-    # Отображение данных
-    page.add(
-        ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}", weight=ft.FontWeight.BOLD, color="green"),
-        row,
-        ft.Divider(),
+    # chat init
+    # Chat messages
+    chat = ft.ListView(
+        expand=True,
+        spacing=10,
+        auto_scroll=True,
     )
     for comment in comments:
         if isinstance(comment, dict):  # Убедиться, что элемент - словарь
-            page.add(
-                ft.Column(
-                    [
-                        ft.Text(f'''{comment.get('user', 'N/A').get('username', 'N/A')}: {comment.get('content', 'Unknown')}'''),
-                    ],
-                    spacing=10
-                )
+            chat.controls.append(ft.Text(
+                            f"{comment.get('user', 'N/A').get('username', 'N/A')}: {comment.get('content', 'Unknown')}")
             )
         else:
-            page.add(ft.Text(f"Invalid data format: {comment}", color="orange"))
+            chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
+
+
+
+    def on_message(message: Message):
+        chat.controls.append(ft.Text(f"{message.user}: {message.text}"))
+        page.update()
+
+    # Подписка на получение сообщений
+    page.pubsub.subscribe(on_message)
+
+    def send_click(e):
+        page.pubsub.send_all(Message(user='Я', text=new_message.value))
+        new_message.value = ""
+        page.update()
+
+    # Поле для ввода
+    new_message = ft.TextField(
+        hint_text="Write a message...",
+        autofocus=True,
+        shift_enter=True,
+        min_lines=1,
+        max_lines=5,
+        filled=True,
+        expand=True,
+        on_submit=send_click,
+    )
+
+    # Отображение данных о кофе
+    page.add(
+        ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}", weight=ft.FontWeight.BOLD, color="green"),
+        coffee_description,
+        ft.Divider(),
+    )
+
+    # Отображение комментариев
+    page.add(
+        chat,
+        ft.Row(controls=
+                     [
+                         new_message,
+                         ft.IconButton(
+                            icon=ft.Icons.SEND_ROUNDED,
+                            tooltip="Send message",
+                            on_click=send_click,
+                        ),
+                     ]
+                ),
+    )
+
 
 ft.app(target=main)
+
+
+if __name__ == "__main__":
+    ft.app(target=main, debug=True)
