@@ -61,49 +61,44 @@ def show_coffees_page(page: ft.Page):
 
     coffees = fetch_coffees()
 
+    # Создаем контейнер для карточек
     cards_list = ft.ListView(expand=True, spacing=10)
 
     # Заполняем таблицу данными
     for coffee in coffees:
-        card = ft.Card(
-            content=ft.Container(
-                content=ft.Column(
-                    [
-                        ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
-                        ft.Text(coffee["yield_"], max_lines=2),
-                        ft.Text(coffee["processing"], max_lines=2),
-                        ft.Text(coffee["origin"], max_lines=2),
-                        ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2),
-                        ft.Text(coffee["variety"], max_lines=2),
-                        ft.Text(coffee["region"], max_lines=2),
-                        ft.Text(coffee["farm"], max_lines=2),
-                        ft.Text(coffee["farmer"], max_lines=2),
-                        ft.Text(coffee["roaster"], max_lines=2),
-                        ft.Text(coffee["price"], max_lines=2),
-                        ft.Text(coffee["weight"], max_lines=2),
-                        ft.Text(coffee["q_grade_rating"], max_lines=2),
-                        ft.Text(coffee["rating"], max_lines=2),
-                        ft.Text(coffee["reviews"], max_lines=2),
-                        ft.Text(coffee["comments"], max_lines=2),
-                        ft.Text(coffee["roasting_level"], max_lines=2),
-                        ft.Text(coffee["description"], max_lines=2),
-                    ],
-                    spacing=5,
+        card = ft.GestureDetector(
+            content=ft.Card(
+                content=ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
+                            ft.Text(coffee["yield_"], max_lines=2),
+                            ft.Text(coffee["processing"], max_lines=2),
+                            ft.Text(coffee["origin"], max_lines=2),
+                            ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2),
+                            ft.Text(coffee["variety"], max_lines=2),
+                            ft.Text(coffee["region"], max_lines=2),
+                            ft.Text(coffee["farm"], max_lines=2),
+                            ft.Text(coffee["farmer"], max_lines=2),
+                            ft.Text(coffee["roaster"], max_lines=2),
+                            ft.Text(coffee["price"], max_lines=2),
+                            ft.Text(coffee["weight"], max_lines=2),
+                            ft.Text(coffee["q_grade_rating"], max_lines=2),
+                            ft.Text(coffee["rating"], max_lines=2),
+                            ft.Text(coffee["reviews"], max_lines=2),
+                            ft.Text(coffee["comments"], max_lines=2),
+                            ft.Text(coffee["roasting_level"], max_lines=2),
+                            ft.Text(coffee["description"], max_lines=2),
+                        ],
+                        spacing=5,
+                    ),
+                    padding=ft.padding.all(10),
                 ),
-                padding=ft.padding.all(10),
             ),
+            on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
         )
         cards_list.controls.append(card)
 
-
-
-    # Добавляем таблицу на страницу
-    # page.add(
-    #     ft.Row(
-    #         controls=[data_table],
-    #         scroll=ft.ScrollMode.AUTO,  # Включаем горизонтальную прокрутку
-    #     )
-    # )
     page.add(cards_list)
 
     # Обработка изменений маршрута
