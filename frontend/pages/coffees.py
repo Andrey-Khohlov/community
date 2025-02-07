@@ -90,12 +90,13 @@ def show_coffees_page(page: ft.Page):
                             ft.Text(coffee["roasting_level"], max_lines=2),
                             ft.Text(coffee["description"], max_lines=2),
                         ],
-                        spacing=5,
+                        spacing=10,
                     ),
                     padding=ft.padding.all(10),
                 ),
             ),
             on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
+            mouse_cursor=ft.MouseCursor.CLICK,
         )
         cards_list.controls.append(card)
 
