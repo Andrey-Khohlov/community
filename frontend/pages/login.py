@@ -55,7 +55,6 @@ def main(page: ft.Page) -> None:
     )
 
     # Обработчик маршрутов
-    # Обработчик маршрутов
     def route_change(route):
         if page.route == "/coffees":
             show_coffees_page(page)  # Используем функцию из отдельного файла

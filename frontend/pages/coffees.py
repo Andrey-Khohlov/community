@@ -61,51 +61,50 @@ def show_coffees_page(page: ft.Page):
 
     coffees = fetch_coffees()
 
+    cards_list = ft.ListView(expand=True, spacing=10)
+
     # Заполняем таблицу данными
     for coffee in coffees:
-        data_table.rows.append(
-            ft.DataRow(
-                cells=[
-                    ft.DataCell(
-                        ft.ElevatedButton(
-                            text=coffee["title"],
-                            on_click=lambda _, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),
-                        ),
-                    ),
-
-                    ft.DataCell(ft.Text(coffee["yield_"], max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["processing"], max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["origin"])),
-                    ft.DataCell(ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["variety"], max_lines=2)),
-
-                    ft.DataCell(ft.Text(coffee["region"], max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["farm"], max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["farmer"], max_lines=2)),
-
-
-                    ft.DataCell(ft.Text(coffee["roaster"], max_lines=2)),
-                    ft.DataCell(ft.Text(coffee["price"])),
-                    ft.DataCell(ft.Text(coffee["weight"])),
-                    ft.DataCell(ft.Text(coffee["q_grade_rating"])),
-
-                    ft.DataCell(ft.Text(coffee["rating"])),
-                    ft.DataCell(ft.Text(coffee["reviews"])),
-                    ft.DataCell(ft.Text(coffee["comments"])),
-
-                    ft.DataCell(ft.Text(coffee["roasting_level"])),
-                    ft.DataCell(ft.Text(coffee["description"], max_lines=2)),
-                ],
-            )
+        card = ft.Card(
+            content=ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
+                        ft.Text(coffee["yield_"], max_lines=2),
+                        ft.Text(coffee["processing"], max_lines=2),
+                        ft.Text(coffee["origin"], max_lines=2),
+                        ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2),
+                        ft.Text(coffee["variety"], max_lines=2),
+                        ft.Text(coffee["region"], max_lines=2),
+                        ft.Text(coffee["farm"], max_lines=2),
+                        ft.Text(coffee["farmer"], max_lines=2),
+                        ft.Text(coffee["roaster"], max_lines=2),
+                        ft.Text(coffee["price"], max_lines=2),
+                        ft.Text(coffee["weight"], max_lines=2),
+                        ft.Text(coffee["q_grade_rating"], max_lines=2),
+                        ft.Text(coffee["rating"], max_lines=2),
+                        ft.Text(coffee["reviews"], max_lines=2),
+                        ft.Text(coffee["comments"], max_lines=2),
+                        ft.Text(coffee["roasting_level"], max_lines=2),
+                        ft.Text(coffee["description"], max_lines=2),
+                    ],
+                    spacing=5,
+                ),
+                padding=ft.padding.all(10),
+            ),
         )
+        cards_list.controls.append(card)
+
+
 
     # Добавляем таблицу на страницу
-    page.add(
-        ft.Row(
-            controls=[data_table],
-            scroll=ft.ScrollMode.AUTO,  # Включаем горизонтальную прокрутку
-        )
-    )
+    # page.add(
+    #     ft.Row(
+    #         controls=[data_table],
+    #         scroll=ft.ScrollMode.AUTO,  # Включаем горизонтальную прокрутку
+    #     )
+    # )
+    page.add(cards_list)
 
     # Обработка изменений маршрута
     def route_change(route) -> None:
