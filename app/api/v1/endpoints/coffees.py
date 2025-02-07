@@ -8,14 +8,14 @@ from app.schemas.coffees import CoffeesAddSchema
 
 router = APIRouter()
 
-@router.post("/coffees")
+@router.post("/")
 async def add_coffee(coffee: CoffeesAddSchema, session: SessionDep):
     new_coffee = CoffeesAddModel(**coffee.model_dump())
     session.add(new_coffee)
     await session.commit()
     return {"Ok": True}
 
-@router.get("/coffees")
+@router.get("/")
 async def get_coffee(session: SessionDep):
     query = select(CoffeesAddModel)
     coffee = await session.execute(query)

@@ -7,14 +7,14 @@ from app.schemas.users import UsersAddSchema
 
 router = APIRouter()
 
-@router.post("/users")
+@router.post("/")
 async def add_user(user: UsersAddSchema, session: SessionDep):
     new_user = UsersAddModel(**user.model_dump())
     session.add(new_user)
     await session.commit()
     return {"Ok": True}
 
-@router.get("/users")
+@router.get("/")
 async def get_user(session: SessionDep):
     query = select(UsersAddModel)
     user = await session.execute(query)

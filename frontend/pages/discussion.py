@@ -1,5 +1,7 @@
 import httpx
 import flet as ft
+from flet_core.types import AppView
+
 
 # https://github.com/flet-dev/examples/tree/main/python/tutorials/chat
 
@@ -11,10 +13,10 @@ class Message:
 
 API_URL = "http://127.0.0.1:8000"
 
-def main(page: ft.Page):
+def discussion(page: ft.Page, coffee_id: int = 1):
     page.theme_mode = ft.ThemeMode.DARK
+    page.clean()
 
-    coffee_id = 1
     # Запрос к API
     try:
         response = httpx.get(f"{API_URL}/v1/comments/{coffee_id}", follow_redirects=True)
@@ -135,7 +137,14 @@ def main(page: ft.Page):
 
     # Отображение данных о кофе
     page.add(
-        ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}", weight=ft.FontWeight.BOLD, color="green"),
+        ft.Row(
+            [ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}",
+                     weight=ft.FontWeight.BOLD,
+                     color="green"
+                     )
+             ],
+            alignment=ft.MainAxisAlignment.START
+        ),
         coffee_description,
         ft.Divider(),
     )
@@ -156,8 +165,8 @@ def main(page: ft.Page):
     )
 
 
-ft.app(target=main)
+    page.update()
 
 
 if __name__ == "__main__":
-    ft.app(target=main, debug=True)
+    ft.app(target=discussion)

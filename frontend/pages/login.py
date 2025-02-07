@@ -1,10 +1,9 @@
-from logging import disable
-
 import flet as ft
 from  flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 
 from coffees import show_coffees_page
+from frontend.pages.discussion import discussion
 
 
 def main(page: ft.Page) -> None:
@@ -34,14 +33,6 @@ def main(page: ft.Page) -> None:
         print('Password:', text_password.value)
         # Переход на страницу /coffees
         page.go("/coffees")
-
-        # page.clean()
-        # page.add(
-        #     Row(
-        #         controls=[Text("Вперёд к вкусному кофе!", size=24, weight=ft.FontWeight.BOLD)],
-        #         alignment=ft.MainAxisAlignment.CENTER
-        #     )
-        # )
 
     checkbox_signup.on_change = validate
     text_username.on_change = validate
@@ -75,4 +66,4 @@ def main(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.app(target=main, view=ft.WEB_BROWSER)

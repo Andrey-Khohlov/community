@@ -8,7 +8,7 @@ from app.schemas.reviews import ReviewsAddSchema
 router = APIRouter()
 
 
-@router.post("/reviews")
+@router.post("/")
 async def add_review(review: ReviewsAddSchema, session: SessionDep):
     new_review = ReviewsAddModel(**review.model_dump())
     session.add(new_review)
@@ -16,7 +16,7 @@ async def add_review(review: ReviewsAddSchema, session: SessionDep):
     return {"Ok": True}
 
 
-@router.get("/reviews")
+@router.get("/")
 async def get_review(session: SessionDep):
     query = select(ReviewsAddModel)
     review = await session.execute(query)
