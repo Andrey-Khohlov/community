@@ -30,9 +30,31 @@ def show_coffees_page(page: ft.Page):
     data_table = ft.DataTable(
         columns=[
             ft.DataColumn(ft.Text("Название")),
+
+            ft.DataColumn(ft.Text("Урожай")),
+            ft.DataColumn(ft.Text("Обработка")),
+            ft.DataColumn(ft.Text("Страна")),
+            ft.DataColumn(ft.Text("Высота")),
+            ft.DataColumn(ft.Text("Разновидность")),
+
+
             ft.DataColumn(ft.Text("Регион")),
+            ft.DataColumn(ft.Text("Ферма/станция")),
+            ft.DataColumn(ft.Text("Производитель")),
+
+            ft.DataColumn(ft.Text("Обжарщик")),
             ft.DataColumn(ft.Text("Цена")),
-            ft.DataColumn(ft.Text(" ")),
+            ft.DataColumn(ft.Text("Вес")),
+            ft.DataColumn(ft.Text("Q-оценка")),
+
+            ft.DataColumn(ft.Text("Рейтинг")),
+            ft.DataColumn(ft.Text("Оценок")),
+            ft.DataColumn(ft.Text("Комментариев")),
+
+            ft.DataColumn(ft.Text("Обжарка")),
+            ft.DataColumn(ft.Text("Описание")),
+
+            # ft.DataColumn(ft.Text(" ")),
         ],
         rows=[],
     )
@@ -44,21 +66,46 @@ def show_coffees_page(page: ft.Page):
         data_table.rows.append(
             ft.DataRow(
                 cells=[
-                    ft.DataCell(ft.Text(coffee["title"])),
-                    ft.DataCell(ft.Text(coffee["region"])),
-                    ft.DataCell(ft.Text(f"{coffee['price']} руб.")),
                     ft.DataCell(
                         ft.ElevatedButton(
-                            text=f"к отзывам ",
+                            text=coffee["title"],
                             on_click=lambda _, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),
-                        )
+                        ),
                     ),
+
+                    ft.DataCell(ft.Text(coffee["yield_"], max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["processing"], max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["origin"])),
+                    ft.DataCell(ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["variety"], max_lines=2)),
+
+                    ft.DataCell(ft.Text(coffee["region"], max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["farm"], max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["farmer"], max_lines=2)),
+
+
+                    ft.DataCell(ft.Text(coffee["roaster"], max_lines=2)),
+                    ft.DataCell(ft.Text(coffee["price"])),
+                    ft.DataCell(ft.Text(coffee["weight"])),
+                    ft.DataCell(ft.Text(coffee["q_grade_rating"])),
+
+                    ft.DataCell(ft.Text(coffee["rating"])),
+                    ft.DataCell(ft.Text(coffee["reviews"])),
+                    ft.DataCell(ft.Text(coffee["comments"])),
+
+                    ft.DataCell(ft.Text(coffee["roasting_level"])),
+                    ft.DataCell(ft.Text(coffee["description"], max_lines=2)),
                 ],
             )
         )
 
     # Добавляем таблицу на страницу
-    page.add(data_table)
+    page.add(
+        ft.Row(
+            controls=[data_table],
+            scroll=ft.ScrollMode.AUTO,  # Включаем горизонтальную прокрутку
+        )
+    )
 
     # Обработка изменений маршрута
     def route_change(route) -> None:
