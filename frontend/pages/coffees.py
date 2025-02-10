@@ -26,43 +26,10 @@ def show_coffees_page(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.clean()
 
-    # Создаем таблицу
-    data_table = ft.DataTable(
-        columns=[
-            ft.DataColumn(ft.Text("Название")),
-
-            ft.DataColumn(ft.Text("Урожай")),
-            ft.DataColumn(ft.Text("Обработка")),
-            ft.DataColumn(ft.Text("Страна")),
-            ft.DataColumn(ft.Text("Высота")),
-            ft.DataColumn(ft.Text("Разновидность")),
-
-
-            ft.DataColumn(ft.Text("Регион")),
-            ft.DataColumn(ft.Text("Ферма/станция")),
-            ft.DataColumn(ft.Text("Производитель")),
-
-            ft.DataColumn(ft.Text("Обжарщик")),
-            ft.DataColumn(ft.Text("Цена")),
-            ft.DataColumn(ft.Text("Вес")),
-            ft.DataColumn(ft.Text("Q-оценка")),
-
-            ft.DataColumn(ft.Text("Рейтинг")),
-            ft.DataColumn(ft.Text("Оценок")),
-            ft.DataColumn(ft.Text("Комментариев")),
-
-            ft.DataColumn(ft.Text("Обжарка")),
-            ft.DataColumn(ft.Text("Описание")),
-
-            # ft.DataColumn(ft.Text(" ")),
-        ],
-        rows=[],
-    )
-
     coffees = fetch_coffees()
 
     # Создаем контейнер для карточек
-    cards_list = ft.ListView(expand=True, spacing=10)
+    cards_list = ft.ListView(expand=True, spacing=30)
 
     # Заполняем таблицу данными
     for coffee in coffees:
@@ -90,12 +57,19 @@ def show_coffees_page(page: ft.Page):
                             ft.Text(coffee["roasting_level"], max_lines=2),
                             ft.Text(coffee["description"], max_lines=2),
                         ],
-                        spacing=10,
+                        spacing=2,
                     ),
-                    padding=ft.padding.all(10),
+                    padding=ft.padding.all(5),
+                    # bgcolor=ft.colors.WHITE,  # Цвет фона по умолчанию
+                    # border_radius=ft.border_radius.all(5),  # Скругление углов
+                    # on_hover=lambda e: setattr(
+                    #     e.control, "bgcolor", ft.colors.GREY_300 if e.data == "true" else ft.colors.WHITE
+                    # ),  # Изменение цвета при наведении
                 ),
+                elevation=2,  # Тень по умолчанию
             ),
             on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
+            on_hover=lambda e: setattr(e.control.content, "elevation", 8 if e.data == "true" else 2), # Увеличиваем тень при наведении
             mouse_cursor=ft.MouseCursor.CLICK,
         )
         cards_list.controls.append(card)

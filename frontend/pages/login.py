@@ -1,10 +1,13 @@
 import flet as ft
+import httpx
 from  flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 
 from coffees import show_coffees_page
 from frontend.pages.discussion import discussion
 
+
+API_URL = "http://127.0.0.1:8000"
 
 def main(page: ft.Page) -> None:
     page.title = "Signup"
@@ -18,8 +21,8 @@ def main(page: ft.Page) -> None:
     # Set our fields
     text_username: TextField = TextField(label="Username", text_align=ft.TextAlign.LEFT, width=200)
     text_password: TextField = TextField(label="Password", text_align=ft.TextAlign.LEFT, width=200, password=True)
-    checkbox_signup: Checkbox = Checkbox(label='Я согласен с правилами использования', value=False)
-    button_submit: ElevatedButton = ElevatedButton(text="Вперёд к вкусному кофе!", width=200, disabled=True)
+    checkbox_signup: Checkbox = Checkbox(label='Я сегодня пил кофе', value=False)
+    button_submit: ElevatedButton = ElevatedButton(text="Вперёд к вкусному кофе!", width=250, disabled=True)
 
     def validate(event: ControlEvent) -> None:
         if all([text_username.value, text_password.value, checkbox_signup.value]):
@@ -29,10 +32,27 @@ def main(page: ft.Page) -> None:
         page.update()
 
     def submit(event: ControlEvent) -> None:
+        """Проверяет, находится ли пользователь в базе данных и перенаправляет на страницу /coffees"""
         print('Username:', text_username.value)
         print('Password:', text_password.value)
-        # Переход на страницу /coffees
-        page.go("/coffees")
+        # Запрос к API
+        try:
+            response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
+            response.raise_for_status()  # Проверяем успешность запроса
+        except httpx.RequestError as e:
+            page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
+            return
+        except httpx.HTTPStatusError as e:
+            page.add(ft.Text(f"HTTP Error: {e.response.status_code}", color="red"))
+            return
+        # Проверяем, находится ли пользователь в базе данных
+        for user in response.json()["Ok"]:
+            if user["username"] == text_username.value and user["password"] == text_password.value:
+                page.go("/coffees")
+                return
+        # Если пользователь не найден, выводим сообщение об ошибке
+        page.add(ft.Text("Неверное имя пользователя или пароль", color="red"))
+        return
 
     checkbox_signup.on_change = validate
     text_username.on_change = validate
