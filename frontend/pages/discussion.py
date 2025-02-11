@@ -49,58 +49,61 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         return
 
     # Заголовок
-    page.title = f"чат о кофеёчке {coffee.get('title', 'None')}"
+    page.title = f"{coffee.get('title', 'None')}"
 
-    # Создаем четыре столбца
-    column1 = ft.Column(
-        controls=[
-            ft.Text(f"Обжарщик: {coffee.get('roaster', 'N/A')}", color="green"),
-            ft.Text(f"Q-оценка: {coffee.get('q_grade_rating', 'N/A')}", color="green"),
-            ft.Text(f"Цена: {coffee.get('price', 'N/A')} за {coffee.get('weight', 'N/A')} г", color="green"),
-            ft.Text("")
-        ],
-        spacing=10,  # Отступ между элементами
+    card = ft.Container(
+        content=ft.Column(
+            [
+                # Первая строка
+                ft.Row(
+                    [
+                        ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
+                        ft.Text(f'урожай {coffee["yield_"]},'),
+                        ft.Text(coffee["processing"]),
+                        ft.Text(f'{coffee["variety"]},'),
+                        ft.Text(
+                            f'высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м,'),
+                    ],
+                    spacing=10,  # Расстояние между элементами в строке
+                ),
+                # Вторая строка
+                ft.Row(
+                    [
+                        ft.Text(f'{coffee["origin"]},'),
+                        ft.Text(f'{coffee["region"]},'),
+                        ft.Text(f'ферма/станция: {coffee["farm"]},'),
+                        ft.Text(f'производитель: {coffee["farmer"]},'),
+
+                    ],
+                    spacing=10,
+                ),
+                # Третья строка
+                ft.Row(
+                    [
+                        ft.Text(coffee["roaster"]),
+                        ft.Text(f'{coffee["price"]} руб за {coffee["weight"]} г,'),
+                        ft.Text(f'Q-оценка: {coffee["q_grade_rating"]},'),
+                        ft.Text(f'рейтинг: {coffee["rating"]},'),
+                        ft.Text(f'отзывов: {coffee["reviews"]},'),
+                        ft.Text(f'комментариев: {coffee["comments"]},'),
+                        ft.Text(f'обжарка под {coffee["roasting_level"]}'),
+                    ],
+                    spacing=10,
+                ),
+                # Четвертая строка
+                ft.Row(
+                    [
+
+                        ft.Text(coffee["description"], max_lines=2),
+                    ],
+                    spacing=10,
+                ),
+            ],
+            spacing=5,  # Расстояние между строками
+        ),
+        padding=ft.padding.all(5),
     )
 
-    column2 = ft.Column(
-        controls=[
-            ft.Text(f"Страна: {coffee.get('origin', 'N/A')}", color="green"),
-            ft.Text(f"Регион: {coffee.get('region', 'N/A')}", color="green"),
-            ft.Text(f"Ферма/Станция: {coffee.get('farm', 'N/A')}", color="green"),
-            ft.Text(f"Производитель: {coffee.get('farmer', 'N/A')}", color="green"),
-        ],
-        spacing=10,
-    )
-
-    column3 = ft.Column(
-        controls=[
-            ft.Text(f"Разновидность: {coffee.get('variety', 'N/A')}", color="green"),
-            ft.Text(f"Обработка: {coffee.get('processing', 'N/A')}", color="green"),
-            ft.Text(f"Высота произрастания: {coffee.get('height_min', 'N/A')} - {coffee.get('height_max', 'N/A')}",
-                    color="green"),
-            ft.Text(f"Урожай: {coffee.get('yield_', 'N/A')}", color="green"),
-        ],
-        spacing=10,
-    )
-
-    column4 = ft.Column(
-        controls=[
-            ft.Text(f"Рейтинг покупателей: {coffee.get('rating', 'N/A')}", color="green"),
-            ft.Text(f"Оценок: {coffee.get('reviews', 'N/A')}", color="green"),
-            ft.Text(f"Комментариев: {coffee.get('comments', 'N/A')}", color="green"),
-            ft.Text(f"Фото упаковки: {coffee.get('pack_img', 'N/A')}", color="green"),
-        ],
-        spacing=10,
-    )
-
-    # Размещаем столбцы в строке
-    coffee_description = ft.Row(
-        controls=[column1, column2, column3, column4],
-        spacing=20,  # Отступ между столбцами
-        alignment=ft.MainAxisAlignment.START,  # Выравнивание по левому краю
-    )
-
-    # chat init
     # Chat messages
     chat = ft.ListView(
         expand=True,
@@ -163,21 +166,10 @@ def discussion(page: ft.Page, coffee_id: int = 1):
     )
 
     # Отображение данных о кофе
-    page.add(
-        ft.Row(
-            [ft.Text(f"{coffee.get('title', 'N/A')}: {coffee.get('description', 'Unknown')}",
-                     weight=ft.FontWeight.BOLD,
-                     color="green"
-                     )
-             ],
-            alignment=ft.MainAxisAlignment.START
-        ),
-        coffee_description,
-        ft.Divider(),
-    )
-
     # Отображение комментариев
     page.add(
+        card,
+        ft.Divider(),
         chat,
         ft.Row(controls=
                      [

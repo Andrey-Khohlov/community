@@ -38,38 +38,59 @@ def show_coffees_page(page: ft.Page):
                 content=ft.Container(
                     content=ft.Column(
                         [
-                            ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
-                            ft.Text(coffee["yield_"], max_lines=2),
-                            ft.Text(coffee["processing"], max_lines=2),
-                            ft.Text(coffee["origin"], max_lines=2),
-                            ft.Text(f'{coffee["height_min"]} - {coffee["height_max"]}', max_lines=2),
-                            ft.Text(coffee["variety"], max_lines=2),
-                            ft.Text(coffee["region"], max_lines=2),
-                            ft.Text(coffee["farm"], max_lines=2),
-                            ft.Text(coffee["farmer"], max_lines=2),
-                            ft.Text(coffee["roaster"], max_lines=2),
-                            ft.Text(coffee["price"], max_lines=2),
-                            ft.Text(coffee["weight"], max_lines=2),
-                            ft.Text(coffee["q_grade_rating"], max_lines=2),
-                            ft.Text(coffee["rating"], max_lines=2),
-                            ft.Text(coffee["reviews"], max_lines=2),
-                            ft.Text(coffee["comments"], max_lines=2),
-                            ft.Text(coffee["roasting_level"], max_lines=2),
-                            ft.Text(coffee["description"], max_lines=2),
+                            # Первая строка
+                            ft.Row(
+                                [
+                                    ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
+                                    ft.Text(f'урожай {coffee["yield_"]},'),
+                                    ft.Text(coffee["processing"]),
+                                    ft.Text(f'{coffee["variety"]},'),
+                                    ft.Text(f'высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м,'),
+                                ],
+                                spacing=10,  # Расстояние между элементами в строке
+                            ),
+                            # Вторая строка
+                            ft.Row(
+                                [
+                                    ft.Text(f'{coffee["origin"]},'),
+                                    ft.Text(f'{coffee["region"]},'),
+                                    ft.Text(f'ферма/станция: {coffee["farm"]},'),
+                                    ft.Text(f'производитель: {coffee["farmer"]},'),
+
+                                ],
+                                spacing=10,
+                            ),
+                            # Третья строка
+                            ft.Row(
+                                [
+                                    ft.Text(coffee["roaster"]),
+                                    ft.Text(f'{coffee["price"]} руб за {coffee["weight"]} г,'),
+                                    ft.Text(f'Q-оценка: {coffee["q_grade_rating"]},'),
+                                    ft.Text(f'рейтинг: {coffee["rating"]},'),
+                                    ft.Text(f'отзывов: {coffee["reviews"]},'),
+                                    ft.Text(f'комментариев: {coffee["comments"]},'),
+                                    ft.Text(f'обжарка под {coffee["roasting_level"]}'),
+                                ],
+                                spacing=10,
+                            ),
+                            # Четвертая строка
+                            ft.Row(
+                                [
+
+                                    ft.Text(coffee["description"], max_lines=2),
+                                ],
+                                spacing=10,
+                            ),
                         ],
-                        spacing=2,
+                        spacing=5,  # Расстояние между строками
                     ),
                     padding=ft.padding.all(5),
-                    # bgcolor=ft.colors.WHITE,  # Цвет фона по умолчанию
-                    # border_radius=ft.border_radius.all(5),  # Скругление углов
-                    # on_hover=lambda e: setattr(
-                    #     e.control, "bgcolor", ft.colors.GREY_300 if e.data == "true" else ft.colors.WHITE
-                    # ),  # Изменение цвета при наведении
                 ),
                 elevation=2,  # Тень по умолчанию
             ),
             on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
-            on_hover=lambda e: setattr(e.control.content, "elevation", 8 if e.data == "true" else 2), # Увеличиваем тень при наведении
+            on_hover=lambda e: setattr(e.control.content, "elevation", 8 if e.data == "true" else 2),
+            # Увеличиваем тень при наведении
             mouse_cursor=ft.MouseCursor.CLICK,
         )
         cards_list.controls.append(card)
