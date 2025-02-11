@@ -27,7 +27,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(coffees.router, prefix="/v1/coffees", tags=["coffees"])
 app.include_router(users.router, prefix="/v1/users", tags=["users"])
 app.include_router(reviews.router, prefix="/v1/reviews", tags=["reviews"])
-app.include_router(comments.router, prefix="/v1/comments", tags=["comments"])
+app.include_router(comments.router, prefix="/v1", tags=["comments"])
 
 
 if __name__ == "__main__":

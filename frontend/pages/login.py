@@ -4,7 +4,6 @@ from  flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 
 from coffees import show_coffees_page
-from frontend.pages.discussion import discussion
 
 
 API_URL = "http://127.0.0.1:8000"
@@ -23,6 +22,7 @@ def main(page: ft.Page) -> None:
     text_password: TextField = TextField(label="Password", text_align=ft.TextAlign.LEFT, width=200, password=True)
     checkbox_signup: Checkbox = Checkbox(label='Я сегодня пил кофе', value=False)
     button_submit: ElevatedButton = ElevatedButton(text="Вперёд к вкусному кофе!", width=250, disabled=True)
+    error_message: Text = Text(value="", color="red")  # Создаем текстовое поле для сообщения об ошибке
 
     def validate(event: ControlEvent) -> None:
         if all([text_username.value, text_password.value, checkbox_signup.value]):
@@ -48,10 +48,13 @@ def main(page: ft.Page) -> None:
         # Проверяем, находится ли пользователь в базе данных
         for user in response.json()["Ok"]:
             if user["username"] == text_username.value and user["password"] == text_password.value:
+                page.session.set("user", user) # Сохраняем пользователя в sessionStorage
                 page.go("/coffees")
                 return
-        # Если пользователь не найден, выводим сообщение об ошибке
-        page.add(ft.Text("Неверное имя пользователя или пароль", color="red"))
+        else:
+            # Если пользователь не найден, выводим сообщение об ошибке
+            error_message.value = "Неверное имя пользователя или пароль"
+            page.update()
         return
 
     checkbox_signup.on_change = validate
@@ -67,7 +70,8 @@ def main(page: ft.Page) -> None:
                         [text_username,
                         text_password,
                         checkbox_signup,
-                        button_submit,]
+                        button_submit,
+                        error_message,]
                 )
             ],
             alignment=ft.MainAxisAlignment.CENTER

@@ -1,6 +1,12 @@
 import httpx
 import flet as ft
+import requests
 from flet_core.types import AppView
+
+from app.api.v1.endpoints.comments import add_comment
+from app.db.models.comments import CommentsAddModel
+from app.db.sessions import SessionDep
+from app.schemas.comments import CommentsAddSchema
 
 
 # https://github.com/flet-dev/examples/tree/main/python/tutorials/chat
@@ -119,8 +125,29 @@ def discussion(page: ft.Page, coffee_id: int = 1):
     page.pubsub.subscribe(on_message)
 
     def send_click(e):
-        page.pubsub.send_all(Message(user='Я', text=new_message.value))
-        new_message.value = ""
+        user = page.session.get("user")
+
+        # сохраняем сообщение пользователя в базу данных сообщений
+        new_message_json = CommentsAddSchema(
+            product_id=coffee["id"],
+            user_id=user["id"],
+            content=new_message.value,
+            parent_id=0,
+            review_id=0,
+        )
+
+        # Запрос к API
+        response_post = requests.post(
+                f"{API_URL}/v1/comments/",
+                json=new_message_json.model_dump(),
+                headers={"Content-Type": "application/json"},
+            )
+        if response_post.status_code == 200:
+            page.pubsub.send_all(Message(user=user["username"], text=new_message.value))
+            new_message.value = ""
+        else:
+            print(f"Ошибка: {response_post.status_code}, {response_post.text}")
+            page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
         page.update()
 
     # Поле для ввода
