@@ -3,6 +3,7 @@ import flet as ft
 import requests
 
 from app.schemas.comments import CommentsAddSchema
+from . import API_URL
 
 
 # https://github.com/flet-dev/examples/tree/main/python/tutorials/chat
@@ -12,8 +13,6 @@ class Message:
         self.user = user
         self.text = text
 
-
-API_URL = "http://127.0.0.1:8000"
 
 def discussion(page: ft.Page, coffee_id: int = 1):
     page.theme_mode = ft.ThemeMode.DARK

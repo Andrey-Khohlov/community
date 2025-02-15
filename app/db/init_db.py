@@ -126,16 +126,13 @@ comments_dict = [
 ]
 
 async def setup_database():
-    try:
-        # engine.echo = False
-        async with engine.begin() as conn:
-            await conn.run_sync(Model.metadata.drop_all)
-            await conn.run_sync(Model.metadata.create_all)
-        # engine.echo = True
-        return {"DB has been created": True}
-    except Exception as e:
-        print(f"Error setting up database: {e}")
-        raise
+    engine.echo = False
+    async with engine.begin() as conn:
+        await conn.run_sync(Model.metadata.drop_all)
+        await conn.run_sync(Model.metadata.create_all)
+    engine.echo = True
+    return {"DB has been created": True}
+
 
 
 async def insert_init_data():

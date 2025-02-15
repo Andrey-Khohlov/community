@@ -1,10 +1,11 @@
+import os
+
 import flet as ft
 import httpx
 
 from .discussion import discussion
+from . import API_URL
 
-# Адрес вашего бэкенда
-API_URL = "http://127.0.0.1:8000"  # Замените на ваш URL
 
 def fetch_coffees():
     """Функция для получения данных о кофе с бэкенда."""
