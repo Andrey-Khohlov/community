@@ -3,7 +3,14 @@ import httpx
 from  flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 
-from coffees import show_coffees_page
+# import os
+# import sys
+#
+# # Добавляем путь к директории проекта в sys.path
+# project_directory = os.path.abspath(os.path.join('frontend', os.path.dirname(__file__), ".."))
+# sys.path.append(project_directory)
+
+from  frontend.pages.coffees import show_coffees_page
 
 
 API_URL = "http://127.0.0.1:8000"
@@ -89,4 +96,4 @@ def main(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.WEB_BROWSER)
+    ft.app(target=main, view=ft.WEB_BROWSER, port=8550)

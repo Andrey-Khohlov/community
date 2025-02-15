@@ -1,4 +1,5 @@
 import asyncio
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import  FastAPI
@@ -31,5 +32,7 @@ app.include_router(comments.router, prefix="/v1", tags=["comments"])
 
 
 if __name__ == "__main__":
-    # uvicorn.run('main:app', host="0.0.0.0", port=80, reload=True)
-    uvicorn.run('main:app',  reload=True)
+    if os.getenv("DOCKER_ENV") == "true":
+        uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True)
+    else:
+        uvicorn.run('main:app',  reload=True)

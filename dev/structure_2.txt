@@ -1,28 +1,4 @@
-coffee_social_network/
-│
-├── app/
-│   ├── api/
-│   │   ├── v1/
-│   │   │   ├── endpoints/
-│   │   │   │   ├── auth.py
-│   │   │   │   ├── coffee.py
-│   │   │   │   ├── reviews.py
-│   │   │   │   ├── chats.py
-│   │   │   │   └── users.py
-│   │   │   ├── __init__.py
-│   │   │   ├── dependencies.py
-│   │   └── __init__.py
-│   ├── core/
-│   │   ├── config.py
-│   │   ├── security.py
-│   │   └── utils.py
-│   ├── db/
-│   │   ├── models/
-│   │   │   ├── user.py
-│   │   │   ├── coffee.py
-│   │   │   ├── review.py
-│   │   │   ├── chat.py
-│   │   │   └── message.py
+cd co
 │   │   ├── session.py
 │   │   ├── migrations/
 │   │   └── __init__.py

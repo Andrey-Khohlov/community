@@ -1,7 +1,7 @@
 import flet as ft
 import httpx
 
-from frontend.pages.discussion import discussion
+from .discussion import discussion
 
 # Адрес вашего бэкенда
 API_URL = "http://127.0.0.1:8000"  # Замените на ваш URL

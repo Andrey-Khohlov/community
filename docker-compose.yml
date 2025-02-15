@@ -1,0 +1,63 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    ports:
+      - "8000:8000"
+#    volumes:
+#      - .app:/app
+      # Монтируем код бэкенда для разработки
+    environment:
+      - DOCKER_ENV=true
+      - DB_HOST=0.0.0.0
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "8550:8550"
+#    volumes:
+#      - ./frontend:/frontend
+      # Монтируем код фронтенда для разработки
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+#    ports:
+#      - "5432:5432"
+      # Пробрасываем порт 5432 контейнера на 5342 хоста
+    volumes:
+      - ./db:/var/lib/postgresql/data
+      # Сохраняем данные базы на хосте
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  db:
+
+networks:
+  app-network:

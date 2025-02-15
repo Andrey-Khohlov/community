@@ -1,11 +1,7 @@
 import httpx
 import flet as ft
 import requests
-from flet_core.types import AppView
 
-from app.api.v1.endpoints.comments import add_comment
-from app.db.models.comments import CommentsAddModel
-from app.db.sessions import SessionDep
 from app.schemas.comments import CommentsAddSchema
 
 
