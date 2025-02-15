@@ -6,8 +6,6 @@ from app.schemas.comments import CommentsAddSchema
 from . import API_URL
 
 
-# https://github.com/flet-dev/examples/tree/main/python/tutorials/chat
-
 class Message:
     def __init__(self, user: str, text: str):
         self.user = user
