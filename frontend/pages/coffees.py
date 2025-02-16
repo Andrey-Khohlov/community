@@ -22,7 +22,7 @@ def fetch_coffees():
 
 def show_coffees_page(page: ft.Page):
     page.theme_mode = ft.ThemeMode.DARK
-    page.title = "Coffee List"
+    page.title = "Список кофе"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.clean()
@@ -30,19 +30,20 @@ def show_coffees_page(page: ft.Page):
     coffees = fetch_coffees()
 
     # Создаем контейнер для карточек
-    cards_list = ft.ListView(expand=True, spacing=30)
+    cards_list = ft.ListView(expand=True, spacing=20)
 
     # Заполняем таблицу данными
     for coffee in coffees:
         card = ft.GestureDetector(
             content=ft.Card(
+                color=ft.colors.GREY_900,
                 content=ft.Container(
                     content=ft.Column(
                         [
                             # Первая строка
                             ft.Row(
                                 [
-                                    ft.Text(coffee["title"], weight=ft.FontWeight.BOLD),
+                                    ft.Text(coffee["title"], weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_500),
                                     ft.Text(f'урожай {coffee["yield_"]},'),
                                     ft.Text(coffee["processing"]),
                                     ft.Text(f'{coffee["variety"]},'),
@@ -83,11 +84,11 @@ def show_coffees_page(page: ft.Page):
                                 spacing=10,
                             ),
                         ],
-                        spacing=5,  # Расстояние между строками
+                        # spacing=5,  # Расстояние между строками
                     ),
                     padding=ft.padding.all(5),
                 ),
-                elevation=2,  # Тень по умолчанию
+                elevation=20,  # Тень по умолчанию
             ),
             on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
             on_hover=lambda e: setattr(e.control.content, "elevation", 8 if e.data == "true" else 2),

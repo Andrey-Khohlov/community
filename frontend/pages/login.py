@@ -89,4 +89,7 @@ def main(page: ft.Page) -> None:
 
 
 if __name__ == "__main__":
-    ft.app(target=main, view=ft.WEB_BROWSER, port=8550)
+    if os.getenv("DOCKER_ENV") == "true":
+        ft.app(target=main, view=ft.WEB_BROWSER, port=8550)
+    else:
+        ft.app(target=main)
