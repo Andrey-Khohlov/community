@@ -138,8 +138,8 @@ async def setup_database():
 async def insert_init_data():
 
     async with new_async_session() as session:
-        user1 = UsersAddModel(username="admin", email="admin", password="admin")
-        user2 = UsersAddModel(username="user", email="user", password="user")
+        user1 = UsersAddModel(username="admin", email="admin", password="[htypfqltim")
+        user2 = UsersAddModel(username="user", email="user", password="rere")
         coffees = [CoffeesAddModel(**coffee) for coffee in coffe_dict]
         reviews = [ReviewsAddModel(**review) for review in reviews_dict]
         comments = [CommentsAddModel(**comment) for comment in comments_dict]

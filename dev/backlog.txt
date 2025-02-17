@@ -25,7 +25,7 @@ TODO for MVP
 сделать чтобы новые значения попадали на модерацию и висели в сеансе пользователя или был флаг в БД на модерацию
 
 TODO FAR FUTURE
-найти доменное имя/ домены: qgrade exp lookfor tup .coffee coffetap.com thecupof.coffee
+найти доменное имя/ домены: qgrade exp lookfor tup .coffee coffeetap.com thecupof.coffee q90.online coffeetap.online
 SSL letsencrypt.org https://www.dmosk.ru/miniinstruktions.php?mini=get-letsencrypt
 переписать все на async
 сделать дублирование всей базы всех полей для разных языков (русск англ испанский японский китайский корейский немецкий французский португальский итальянский)

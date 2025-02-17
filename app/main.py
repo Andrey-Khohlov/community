@@ -8,6 +8,7 @@ import uvicorn
 
 from app.api.v1.endpoints import coffees, users, reviews, comments
 from app.db.init_db import setup_database, insert_init_data
+from fastapi.middleware.cors import CORSMiddleware
 
 
 @asynccontextmanager
@@ -23,6 +24,14 @@ async def lifespan(app: FastAPI):
     print("Application shutdown.")
 
 app = FastAPI(lifespan=lifespan)
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # Разрешить все домены (для тестирования)
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 # Подключаем роутеры
 app.include_router(coffees.router, prefix="/v1/coffees", tags=["coffees"])
