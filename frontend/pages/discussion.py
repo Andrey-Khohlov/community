@@ -98,7 +98,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         return
 
     # Заголовок
-    page.title = f"Обсуждаем {coffee.get('title', 'None')}"
+    page.title = f"{coffee.get('title', 'None')} - кофе, о котом говорят"
 
     card = ft.Container(
         content=ft.Column(
@@ -180,29 +180,35 @@ def discussion(page: ft.Page, coffee_id: int = 1):
 
     def send_click(e):
         user = page.session.get("user")
-
-        # сохраняем сообщение пользователя в базу данных сообщений
-        new_message_json = CommentsAddSchema(
-            product_id=coffee["id"],
-            user_id=user["id"],
-            content=new_message.value,
-            parent_id=0,
-            review_id=0,
-        )
-
-        # Запрос к API
-        response_post = requests.post(
-                f"{API_URL}/v1/comments/",
-                json=new_message_json.model_dump(),
-                headers={"Content-Type": "application/json"},
-            )
-        if response_post.status_code == 200:
-            page.pubsub.send_all(Message(user=user["username"], text=new_message.value))
-            new_message.value = ""
+        if not user:
+            # Если пользователь не авторизован, открываем диалог регистрации
+            welcome_dlg.open = True
+            page.overlay.append(welcome_dlg)  # Добавляем диалог в overlay
+            page.update()
+            return
         else:
-            print(f"Ошибка: {response_post.status_code}, {response_post.text}")
-            page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
-        page.update()
+            # сохраняем сообщение пользователя в базу данных сообщений
+            new_message_json = CommentsAddSchema(
+                product_id=coffee["id"],
+                user_id=user["id"],
+                content=new_message.value,
+                parent_id=0,
+                review_id=0,
+            )
+
+            # Запрос к API
+            response_post = requests.post(
+                    f"{API_URL}/v1/comments/",
+                    json=new_message_json.model_dump(),
+                    headers={"Content-Type": "application/json"},
+                )
+            if response_post.status_code == 200:
+                page.pubsub.send_all(Message(user=user["username"], text=new_message.value))
+                new_message.value = ""
+            else:
+                print(f"Ошибка: {response_post.status_code}, {response_post.text}")
+                page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
+            page.update()
 
     # Поле для ввода
     new_message = ft.TextField(
@@ -216,23 +222,104 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         on_submit=send_click,
     )
 
-    # Отображение данных о кофе
-    # Отображение комментариев
-    page.add(
-        card,
-        ft.Divider(),
-        chat,
-        ft.Row(controls=
-                     [
-                         new_message,
-                         ft.IconButton(
-                            icon=ft.Icons.SEND_ROUNDED,
-                            tooltip="напишите свои комментарии",
-                            on_click=send_click,
-                        ),
-                     ]
-                ),
+    def join_chat_click(e):
+        if not join_user_name.value:
+            join_user_name.error_text = "Name cannot be blank!"
+            join_user_name.update()
+        if not join_user_pass.value:
+            join_user_pass.error_text = "Password cannot be blank!"
+            join_user_pass.update()
+        else:
+            try:
+                user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
+                user_response.raise_for_status()  # Проверяем успешность запроса
+            except httpx.RequestError as e:
+                page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
+                return
+            except httpx.HTTPStatusError as e:
+                page.add(ft.Text(f"HTTP Error: {e.response.status_code}", color="red"))
+                return
+            # Проверяем, находится ли пользователь в базе данных
+            for user in user_response.json()["Ok"]:
+                if user["username"] == join_user_name.value and user["password"] == join_user_pass.value:
+                    page.session.set("user", user)  # Сохраняем пользователя в sessionStorage
+                    break
+            else:
+                # Если пользователь не найден, выводим сообщение об ошибке
+                welcome_dlg.title = ft.Text("oй-ёй-ёй! что-то не то", color="red")  #TODO make it vanished
+                page.update()
+                return
+            welcome_dlg.open = False
+            new_message.prefix = ft.Text(f"{join_user_name.value}: ")
+            # TODO make it vanished, не писать в базу?
+            page.pubsub.send_all(
+                Message(
+                    user=join_user_name.value,
+                    text=f"{join_user_name.value} заходит на кофеёк.",
+                    # message_type="login_message",
+                )
+            )
+            page.update()
+
+    # def login(e):
+    # A dialog asking for a user display name
+    join_user_name = ft.TextField(
+        label="Введите имя",
+        autofocus=True,
+        on_submit=join_chat_click,
     )
+    join_user_pass = ft.TextField(
+        label="Введите пароль",
+        autofocus=True,
+        password=True,
+        on_submit=join_chat_click,
+    )
+    welcome_dlg = ft.AlertDialog(
+        open=False,
+        # modal=True,
+        title=ft.Text("Welcome!"),
+        content=ft.Column([join_user_name, join_user_pass], width=300, height=140, tight=True),
+        actions=[ft.ElevatedButton(text="войти", on_click=join_chat_click)],
+        actions_alignment=ft.MainAxisAlignment.END,
+        on_dismiss=lambda e: page.overlay.remove(welcome_dlg),  # Закрытие при клике вне диалога
+    )
+
+    # page.overlay.append(welcome_dlg)
+
+
+
+
+    def message_field() -> ft.Row:
+        if False:
+            return ft.Row(controls=
+                                     [
+                                         ft.TextField("********"),
+                                         ft.IconButton(
+                                            icon=ft.Icons.SEND_ROUNDED,
+                                            tooltip="Войдите для комментирования",
+                                            on_click=login,
+                                        ),
+                                     ]
+                                )
+        else:
+            return ft.Row(controls=
+                                     [
+                                         new_message,
+                                         ft.IconButton(
+                                            icon=ft.Icons.SEND_ROUNDED,
+                                            tooltip="напишите свои комментарии",
+                                            on_click=send_click,
+                                        ),
+                                     ]
+                                )
+
+
+    page.add(
+        card,  # Отображение данных о кофе
+        ft.Divider(),  # Отображение комментариев
+        chat,
+        message_field(),
+        )
 
 
     page.update()
