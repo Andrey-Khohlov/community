@@ -1,11 +1,25 @@
 import os
+import logging
 
 import flet as ft
 import httpx
 
-from .discussion import discussion
+from .discussion import discussion, FONT_COLOR
 from . import API_URL
 
+
+FONT_COLOR = 'black'
+MAIN_COLOR = '#FFC09876'  # Classic Mocka
+MEDIUM_COLOR = '#FFB15616'  # Pantone 18-1421 Baltic Amber
+MINOR_COLOR = '#FF966E50'  # Dark Mocha
+# '#FFD2B496'  # Light Mocha
+# '#FFC4B6A6'  # PANTON 15-1317 Sirocco
+# '#FFB15616'  # Pantone 18-1421 Baltic Amber
+# '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
+
+def on_hover(e):
+    e.control.bgcolor = MEDIUM_COLOR if e.data == "true" else MAIN_COLOR # '#FF5A4A42'
+    e.control.update()
 
 def fetch_coffees():
     """Функция для получения данных о кофе с бэкенда."""
@@ -21,9 +35,8 @@ def fetch_coffees():
 
 
 def main(page: ft.Page):
-    print("Приложение запущено")  # Логирование через page.log
-    print(os.getenv("DOCKER_ENV"))
     page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = MINOR_COLOR
     page.title = "кофе, о котором надо поговорить"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -38,63 +51,28 @@ def main(page: ft.Page):
     for coffee in coffees:
         card = ft.GestureDetector(
             content=ft.Card(
-                color=ft.Colors.GREY_900,
                 content=ft.Container(
                     content=ft.Column(
                         [
-                            # Первая строка
-                            ft.Row(
-                                [
-                                    ft.Text(coffee["title"], weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_500),
-                                    ft.Text(f'урожай {coffee["yield_"]},'),
-                                    ft.Text(coffee["processing"]),
-                                    ft.Text(f'{coffee["variety"]},'),
-                                    ft.Text(f'высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м,'),
-                                ],
-                                spacing=10,  # Расстояние между элементами в строке
-                            ),
-                            # Вторая строка
-                            ft.Row(
-                                [
-                                    ft.Text(f'{coffee["origin"]},'),
-                                    ft.Text(f'{coffee["region"]},'),
-                                    ft.Text(f'ферма/станция: {coffee["farm"]},'),
-                                    ft.Text(f'производитель: {coffee["farmer"]},'),
-
-                                ],
-                                spacing=10,
-                            ),
-                            # Третья строка
-                            ft.Row(
-                                [
-                                    ft.Text(coffee["roaster"]),
-                                    ft.Text(f'{coffee["price"]} руб за {coffee["weight"]} г,'),
-                                    ft.Text(f'Q-оценка: {coffee["q_grade_rating"]},'),
-                                    ft.Text(f'рейтинг: {coffee["rating"]},'),
-                                    ft.Text(f'отзывов: {coffee["reviews"]},'),
-                                    ft.Text(f'комментариев: {coffee["comments"]},'),
-                                    ft.Text(f'обжарка под {coffee["roasting_level"]}'),
-                                ],
-                                spacing=10,
-                            ),
-                            # Четвертая строка
-                            ft.Row(
-                                [
-
-                                    ft.Text(coffee["description"], max_lines=2),
-                                ],
-                                spacing=10,
-                            ),
+                            ft.Text(
+                                f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
+                                color=FONT_COLOR),
+                            ft.Text(
+                                f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
+                                color=FONT_COLOR),
+                            ft.Text(
+                                f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]},обжарка под {coffee["roasting_level"]}.',
+                                color=FONT_COLOR),
+                            ft.Text(coffee["description"], max_lines=3, color=FONT_COLOR),
                         ],
-                        # spacing=5,  # Расстояние между строками
                     ),
                     padding=ft.padding.all(5),
+                    border_radius=10,
+                    bgcolor=MAIN_COLOR,
+                    on_hover=on_hover,
                 ),
-                elevation=20,  # Тень по умолчанию
             ),
             on_tap=lambda e, coffee_id=coffee["id"]: page.go(f"/discussion/{coffee_id}"),  # Обработка нажатия
-            on_hover=lambda e: setattr(e.control.content, "elevation", 8 if e.data == "true" else 2),
-            # Увеличиваем тень при наведении
             mouse_cursor=ft.MouseCursor.CLICK,
         )
         cards_list.controls.append(card)
@@ -116,9 +94,8 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     if os.getenv("DOCKER_ENV") == "true":
-        import logging
-
-        logging.basicConfig(level=logging.DEBUG)
+        # logging.basicConfig(level=logging.DEBUG)
+        logging.getLogger("flet_core").setLevel(logging.INFO)
         ft.app(target=main, view=ft.WEB_BROWSER, port=8550)  # host="0.0.0.0",
     else:
-        ft.app(target=main, view=ft.AppView.WEB_BROWSER)
+        ft.app(target=main,view=ft.AppView.WEB_BROWSER)

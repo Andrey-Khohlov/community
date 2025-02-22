@@ -8,11 +8,16 @@ from app.schemas.comments import CommentsAddSchema
 from . import API_URL
 
 
+FONT_COLOR = 'black'
+
 class Message:
     def __init__(self, user: str, text: str):
         self.user = user
         self.text = text
 
+def on_hover(e):
+    e.control.bgcolor = '#FF966E50' if e.data == "true" else '#FFC09876' # '#FF5A4A42'
+    e.control.update()
 
 def get_initials(user_name: str):
     return user_name[:1].capitalize()
@@ -51,6 +56,7 @@ class ChatMessage(ft.Row):
     def __init__(self, message: Message):
         super().__init__()
         self.vertical_alignment = ft.CrossAxisAlignment.START
+        self.expand = True
         self.controls=[
                 ft.CircleAvatar(
                     content=ft.Text(get_initials(message.user)),
@@ -59,18 +65,21 @@ class ChatMessage(ft.Row):
                 ),
                 ft.Column(
                     [
-                        ft.Text(message.user, weight="bold"),
-                        ft.Text(message.text, selectable=True),
+                        ft.Text(message.user, weight="bold", color=FONT_COLOR),
+                        ft.Text(message.text, selectable=True, color=FONT_COLOR),
                     ],
                     tight=True,
                     spacing=5,
+                    expand=True,
                 ),
             ]
 
 
 def discussion(page: ft.Page, coffee_id: int = 1):
-    page.theme_mode = ft.ThemeMode.DARK
     page.clean()
+    page.horizontal_alignment = ft.CrossAxisAlignment.START  # Выравниваем по левому краю
+    page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = '#FFC09876'
 
     # Запрос к API
     try:
@@ -96,79 +105,6 @@ def discussion(page: ft.Page, coffee_id: int = 1):
     if not isinstance(comments, list):
         page.add(ft.Text("Error: Expected a list of comment reviews", color="red"))
         return
-
-    # Заголовок
-    page.title = f"{coffee.get('title', 'None')} - кофе, о котом говорят"
-
-    card = ft.Container(
-        content=ft.Column(
-            [
-                # Первая строка
-                ft.Row(
-                    [
-                        ft.Text(coffee["title"], weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_500),
-                        ft.Text(f'урожай {coffee["yield_"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(coffee["processing"], color=ft.Colors.GREEN_600 ),
-                        ft.Text(f'{coffee["variety"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(
-                            f'высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м,', color=ft.Colors.GREEN_600),
-                    ],
-                    spacing=10,  # Расстояние между элементами в строке
-                ),
-                # Вторая строка
-                ft.Row(
-                    [
-                        ft.Text(f'{coffee["origin"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'{coffee["region"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'ферма/станция: {coffee["farm"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'производитель: {coffee["farmer"]},', color=ft.Colors.GREEN_600),
-
-                    ],
-                    spacing=10,
-                ),
-                # Третья строка
-                ft.Row(
-                    [
-                        ft.Text(coffee["roaster"], color=ft.Colors.GREEN_600),
-                        ft.Text(f'{coffee["price"]} руб за {coffee["weight"]} г,', color=ft.Colors.GREEN_600),
-                        ft.Text(f'Q-оценка: {coffee["q_grade_rating"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'рейтинг: {coffee["rating"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'отзывов: {coffee["reviews"]},',  color=ft.Colors.GREEN_600),
-                        ft.Text(f'комментариев: {coffee["comments"]},', color=ft.Colors.GREEN_600),
-                        ft.Text(f'обжарка под {coffee["roasting_level"]}', color=ft.Colors.GREEN_600),
-                    ],
-                    spacing=10,
-                ),
-                # Четвертая строка
-                ft.Row(
-                    [
-
-                        ft.Text(coffee["description"], max_lines=3, color=ft.Colors.GREEN_600),
-                    ],
-                    spacing=10,
-                ),
-            ],
-            spacing=5,  # Расстояние между строками
-        ),
-        padding=ft.padding.all(5),
-    )
-
-    # Chat messages
-    chat = ft.ListView(
-        expand=True,
-        spacing=10,
-        auto_scroll=True,
-    )
-    for comment in comments:
-        if isinstance(comment, dict):  # Убедиться, что элемент - словарь
-            chat.controls.append(ChatMessage(Message(user=comment.get('user', 'N/A').get('username', 'N/A'), text=comment.get('content', 'Unknown'))))
-            # chat.controls.append(ft.Text(
-            #                 f"{comment.get('user', 'N/A').get('username', 'N/A')}: {comment.get('content', 'Unknown')}")
-            # )
-        else:
-            chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
-
-
 
     def on_message(message: Message):
         # chat.controls.append(ft.Text(f"{message.user}: {message.text}"))
@@ -212,7 +148,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
 
     # Поле для ввода
     new_message = ft.TextField(
-        hint_text="Тут писать комментарии ...",
+        hint_text="Сообщение",
         autofocus=True,
         shift_enter=True,
         min_lines=1,
@@ -246,12 +182,11 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                     break
             else:
                 # Если пользователь не найден, выводим сообщение об ошибке
-                welcome_dlg.title = ft.Text("oй-ёй-ёй! что-то не то", color="red")  #TODO make it vanished
+                welcome_dlg.title = ft.Text("oй-ёй-ёй! что-то не то", color="red")
                 page.update()
                 return
             welcome_dlg.open = False
             new_message.prefix = ft.Text(f"{join_user_name.value}: ")
-            # TODO make it vanished, не писать в базу?
             page.pubsub.send_all(
                 Message(
                     user=join_user_name.value,
@@ -284,26 +219,56 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         on_dismiss=lambda e: page.overlay.remove(welcome_dlg),  # Закрытие при клике вне диалога
     )
 
-    # page.overlay.append(welcome_dlg)
-
-
-
-
     message_field = ft.Row(controls=
                                      [
                                          new_message,
                                          ft.IconButton(
                                             icon=ft.Icons.SEND_ROUNDED,
-                                            tooltip="напишите комментарии",
+                                            tooltip="Опубликовать сообщение",
                                             on_click=send_click,
                                         ),
                                      ]
                                 )
 
+    page.title = f"{coffee.get('title', 'None')} - кофе, о котом говорят"
+    chat = ft.ListView(
+        expand=True,
+        spacing=10,
+        auto_scroll=True,
+    )
+    for comment in comments:
+        if isinstance(comment, dict):  # Убедиться, что элемент - словарь
+            chat.controls.append(ChatMessage(Message(user=comment.get('user', 'N/A').get('username', 'N/A'),
+                                                     text=comment.get('content', 'Unknown'))))
+        else:
+            chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
+
+    card = ft.Container(
+        content=ft.Column(
+            [
+                ft.Text(
+                    f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
+                    color=FONT_COLOR),
+                ft.Text(
+                    f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
+                    color=FONT_COLOR),
+                ft.Text(
+                    f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]},обжарка под {coffee["roasting_level"]}.',
+                    color=FONT_COLOR),
+                ft.Text(coffee["description"], max_lines=3, color=FONT_COLOR),
+            ],
+            scroll=ft.ScrollMode.AUTO,
+        ),
+        height=140,
+        # expand=True,
+        on_hover=on_hover,
+        border_radius=10,
+    )
 
     page.add(
         card,  # Отображение данных о кофе
-        ft.Divider(),  # Отображение комментариев
+        # ft.Divider(),  # Отображение комментариев
+        # container,
         chat,
         message_field,
         )
