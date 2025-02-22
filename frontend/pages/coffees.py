@@ -20,7 +20,9 @@ def fetch_coffees():
         return f"HTTP Error: {e.response.status_code}",
 
 
-def show_coffees_page(page: ft.Page):
+def main(page: ft.Page):
+    print("Приложение запущено")  # Логирование через page.log
+    print(os.getenv("DOCKER_ENV"))
     page.theme_mode = ft.ThemeMode.DARK
     page.title = "кофе, о котором надо поговорить"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -105,7 +107,7 @@ def show_coffees_page(page: ft.Page):
             coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
             discussion(page, coffee_id)
         elif page.route == "/coffees":
-            show_coffees_page(page)
+            main(page)
 
 
     # Подписываемся на изменения маршрута
@@ -113,4 +115,10 @@ def show_coffees_page(page: ft.Page):
     page.update()
 
 if __name__ == "__main__":
-    ft.app(target=show_coffees_page, view=ft.AppView.WEB_BROWSER)
+    if os.getenv("DOCKER_ENV") == "true":
+        import logging
+
+        logging.basicConfig(level=logging.DEBUG)
+        ft.app(target=main, view=ft.WEB_BROWSER, port=8550)  # host="0.0.0.0",
+    else:
+        ft.app(target=main, view=ft.AppView.WEB_BROWSER)

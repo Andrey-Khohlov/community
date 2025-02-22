@@ -5,7 +5,7 @@ import httpx
 from  flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 
-from  frontend.pages.coffees import show_coffees_page
+from  frontend.pages.coffees import main
 from . import API_URL
 
 def main(page: ft.Page) -> None:
@@ -81,7 +81,7 @@ def main(page: ft.Page) -> None:
     # Обработчик маршрутов
     def route_change(route):
         if page.route == "/coffees":
-            show_coffees_page(page)  # Используем функцию из отдельного файла
+            main(page)  # Используем функцию из отдельного файла
 
     # Подписываемся на изменения маршрута
     page.on_route_change = route_change

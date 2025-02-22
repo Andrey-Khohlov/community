@@ -5,9 +5,6 @@ services:
       dockerfile: backend.Dockerfile
     ports:
       - "8000:8000"
-#    volumes:
-#      - .app:/app
-      # Монтируем код бэкенда для разработки
     environment:
       - DOCKER_ENV=true
       - DB_HOST=0.0.0.0
@@ -28,10 +25,8 @@ services:
       dockerfile: frontend.Dockerfile
     ports:
       - "8550:8550"
-#    volumes:
-#      - ./frontend:/frontend
-      # Монтируем код фронтенда для разработки
     environment:
+      - DOCKER_ENV=true
       - API_URL=http://backend:8000
     depends_on:
       - backend
@@ -61,3 +56,4 @@ volumes:
 
 networks:
   app-network:
+    driver: host

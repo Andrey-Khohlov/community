@@ -289,25 +289,12 @@ def discussion(page: ft.Page, coffee_id: int = 1):
 
 
 
-    def message_field() -> ft.Row:
-        if False:
-            return ft.Row(controls=
-                                     [
-                                         ft.TextField("********"),
-                                         ft.IconButton(
-                                            icon=ft.Icons.SEND_ROUNDED,
-                                            tooltip="Войдите для комментирования",
-                                            on_click=login,
-                                        ),
-                                     ]
-                                )
-        else:
-            return ft.Row(controls=
+    message_field = ft.Row(controls=
                                      [
                                          new_message,
                                          ft.IconButton(
                                             icon=ft.Icons.SEND_ROUNDED,
-                                            tooltip="напишите свои комментарии",
+                                            tooltip="напишите комментарии",
                                             on_click=send_click,
                                         ),
                                      ]
@@ -318,7 +305,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         card,  # Отображение данных о кофе
         ft.Divider(),  # Отображение комментариев
         chat,
-        message_field(),
+        message_field,
         )
 
 
