@@ -4,18 +4,11 @@ import logging
 import flet as ft
 import httpx
 
-from .discussion import discussion, FONT_COLOR
+from .discussion import discussion, FONT_COLOR, MEDIUM_COLOR, MAIN_COLOR, MINOR_COLOR
 from . import API_URL
 
 
-FONT_COLOR = 'black'
-MAIN_COLOR = '#FFC09876'  # Classic Mocka
-MEDIUM_COLOR = '#FFB15616'  # Pantone 18-1421 Baltic Amber
-MINOR_COLOR = '#FF966E50'  # Dark Mocha
-# '#FFD2B496'  # Light Mocha
-# '#FFC4B6A6'  # PANTON 15-1317 Sirocco
-# '#FFB15616'  # Pantone 18-1421 Baltic Amber
-# '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
+logging.getLogger("flet_core").setLevel(logging.INFO)
 
 def on_hover(e):
     e.control.bgcolor = MEDIUM_COLOR if e.data == "true" else MAIN_COLOR # '#FF5A4A42'

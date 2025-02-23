@@ -9,6 +9,14 @@ from . import API_URL
 
 
 FONT_COLOR = 'black'
+FONT_COLOR = 'black'
+MAIN_COLOR = '#FFC09876'  # Classic Mocka
+MEDIUM_COLOR = '#FFB15616'  # Pantone 18-1421 Baltic Amber
+MINOR_COLOR = '#FF966E50'  # Dark Mocha
+# '#FFD2B496'  # Light Mocha
+# '#FFC4B6A6'  # PANTON 15-1317 Sirocco
+# '#FFB15616'  # Pantone 18-1421 Baltic Amber
+# '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
 
 class Message:
     def __init__(self, user: str, text: str):
