@@ -23,6 +23,29 @@ class Message:
         self.user = user
         self.text = text
 
+class ChatMessage(ft.Row):
+    def __init__(self, message: Message):
+        super().__init__()
+        self.vertical_alignment = ft.CrossAxisAlignment.START
+        self.expand = True
+        self.controls=[
+                ft.CircleAvatar(
+                    content=ft.Text(get_initials(message.user), weight=ft.FontWeight.BOLD, size=28),
+                    color=MAIN_COLOR,
+                    bgcolor=get_avatar_color(message.user),
+                ),
+                ft.Column(
+                    [
+                        ft.Text(message.user, weight="bold", color=FONT_COLOR),
+                        ft.Text(message.text, selectable=True, color=FONT_COLOR),
+                    ],
+                    tight=True,
+                    spacing=5,
+                    expand=True,
+                ),
+            ]
+
+
 def on_hover(e):
     e.control.bgcolor = MAIN_COLOR if e.data == "true" else MINOR_COLOR
     e.control.update()
@@ -58,30 +81,6 @@ def get_avatar_color(user_name: str):
         ft.Colors.YELLOW,
     ]
     return colors_lookup[stable_hash(user_name) % len(colors_lookup)]
-
-
-class ChatMessage(ft.Row):
-    def __init__(self, message: Message):
-        super().__init__()
-        self.vertical_alignment = ft.CrossAxisAlignment.START
-        self.expand = True
-        self.controls=[
-                ft.CircleAvatar(
-                    content=ft.Text(get_initials(message.user), weight=ft.FontWeight.BOLD, size=28),
-                    color=MAIN_COLOR,
-                    bgcolor=get_avatar_color(message.user),
-                ),
-                ft.Column(
-                    [
-                        ft.Text(message.user, weight="bold", color=FONT_COLOR),
-                        ft.Text(message.text, selectable=True, color=FONT_COLOR),
-                    ],
-                    tight=True,
-                    spacing=5,
-                    expand=True,
-                ),
-            ]
-
 
 def discussion(page: ft.Page, coffee_id: int = 1):
     page.clean()
@@ -204,7 +203,6 @@ def discussion(page: ft.Page, coffee_id: int = 1):
             )
             page.update()
 
-    # def login(e):
     # A dialog asking for a user display name
     join_user_name = ft.TextField(
         label="Введите имя",
@@ -239,6 +237,8 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                                 )
 
     page.title = f"{coffee.get('title', 'None')} - кофе, о котом говорят"
+
+    # подгружаем комменты из базы
     chat = ft.ListView(
         expand=True,
         spacing=10,
@@ -251,6 +251,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         else:
             chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
 
+    # Создание карточки обсуждаемого кофе
     card = ft.Container(
         content=ft.Column(
             [
@@ -275,11 +276,9 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         ),
         height=140,
         bgcolor=MINOR_COLOR,
-        # expand=True,
-        on_hover=on_hover,
+        # on_hover=on_hover,
         border_radius=10,
     )
-
 
     return ft.View("/discussion/{coffee_id}", [card, chat, message_field], bgcolor=MAIN_COLOR)
 

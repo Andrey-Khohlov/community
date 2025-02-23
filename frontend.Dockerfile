@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8550
 
 # Команда для запуска фронтенда
-CMD ["python", "-m", "frontend.pages.coffees"]
+CMD ["python", "-m", "frontend.pages.frontman"]

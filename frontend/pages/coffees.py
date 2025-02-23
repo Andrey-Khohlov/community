@@ -4,7 +4,7 @@ import logging
 import flet as ft
 import httpx
 
-from .discussion import discussion, FONT_COLOR, MEDIUM_COLOR, MAIN_COLOR, MINOR_COLOR
+from .discussion import FONT_COLOR, MEDIUM_COLOR, MAIN_COLOR, MINOR_COLOR
 from . import API_URL
 
 

@@ -53,3 +53,18 @@ docker-compose exec db /bin/bash
  
 psql -U myuser -d mydatabase
 </code>
+
+- проверить и убить процессы
+
+<code>
+sudo lsof -i :8550
+
+sudo kill -9 <PID>
+</code>
+
+- для создания дампа:
+
+<code>
+docker exec <container_id> pg_dumpall -U <username> > backup_all.sql
+</code>
+
