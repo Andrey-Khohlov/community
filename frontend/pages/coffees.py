@@ -8,7 +8,7 @@ from .discussion import discussion, FONT_COLOR, MEDIUM_COLOR, MAIN_COLOR, MINOR_
 from . import API_URL
 
 
-logging.getLogger("flet_core").setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 def on_hover(e):
     e.control.bgcolor = MEDIUM_COLOR if e.data == "true" else MAIN_COLOR # '#FF5A4A42'
@@ -27,8 +27,8 @@ def fetch_coffees():
         return f"HTTP Error: {e.response.status_code}",
 
 
-def main(page: ft.Page):
-    page.theme_mode = ft.ThemeMode.DARK
+def coffee_list(page: ft.Page):
+    # page.theme_mode = ft.ThemeMode.DARK
     page.bgcolor = MINOR_COLOR
     page.title = "кофе, о котором надо поговорить"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
@@ -70,25 +70,24 @@ def main(page: ft.Page):
         )
         cards_list.controls.append(card)
 
-    page.add(cards_list)
+    # page.add(cards_list)
 
+    return ft.View("/coffees", [cards_list])
     # Обработка изменений маршрута
-    def route_change(route) -> None:
-        if page.route.startswith("/discussion/"):
-            coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
-            discussion(page, coffee_id)
-        elif page.route == "/coffees":
-            main(page)
-
-
-    # Подписываемся на изменения маршрута
-    page.on_route_change = route_change
-    page.update()
+    # def route_change(route) -> None:
+    #     if page.route.startswith("/discussion/"):
+    #         coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
+    #         discussion(page, coffee_id)
+    #     elif page.route == "/coffees":
+    #         coffee_list(page)
+    #
+    #
+    # # Подписываемся на изменения маршрута
+    # page.on_route_change = route_change
+    # page.update()
 
 if __name__ == "__main__":
     if os.getenv("DOCKER_ENV") == "true":
-        # logging.basicConfig(level=logging.DEBUG)
-        logging.getLogger("flet_core").setLevel(logging.INFO)
-        ft.app(target=main, view=ft.WEB_BROWSER, port=8550)  # host="0.0.0.0",
+        ft.app(target=coffee_list, view=ft.WEB_BROWSER, port=8550)  # host="0.0.0.0",
     else:
-        ft.app(target=main,view=ft.AppView.WEB_BROWSER)
+        ft.app(target=coffee_list, view=ft.AppView.WEB_BROWSER)

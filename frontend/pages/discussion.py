@@ -9,14 +9,14 @@ from . import API_URL
 
 
 FONT_COLOR = 'black'
-FONT_COLOR = 'black'
 MAIN_COLOR = '#FFC09876'  # Classic Mocka
 MEDIUM_COLOR = '#FFB15616'  # Pantone 18-1421 Baltic Amber
-MINOR_COLOR = '#FF966E50'  # Dark Mocha
+MINOR_COLOR = '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
 # '#FFD2B496'  # Light Mocha
 # '#FFC4B6A6'  # PANTON 15-1317 Sirocco
 # '#FFB15616'  # Pantone 18-1421 Baltic Amber
 # '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
+# '#FF966E50'  # Dark Mocha
 
 class Message:
     def __init__(self, user: str, text: str):
@@ -86,8 +86,8 @@ class ChatMessage(ft.Row):
 def discussion(page: ft.Page, coffee_id: int = 1):
     page.clean()
     page.horizontal_alignment = ft.CrossAxisAlignment.START  # Выравниваем по левому краю
-    page.theme_mode = ft.ThemeMode.DARK
-    page.bgcolor = '#FFC09876'
+    # page.theme_mode = ft.ThemeMode.DARK
+    page.bgcolor = MINOR_COLOR
 
     # Запрос к API
     try:
@@ -273,16 +273,26 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         border_radius=10,
     )
 
-    page.add(
-        card,  # Отображение данных о кофе
-        # ft.Divider(),  # Отображение комментариев
-        # container,
-        chat,
-        message_field,
-        )
+    # page.add(
+    #     card,  # Отображение данных о кофе
+    #     # ft.Divider(),  # Отображение комментариев
+    #     # container,
+    #     chat,
+    #     message_field,
+    #     )
 
-
-    page.update()
+    return ft.View("/discussion/{coffee_id}", [card, chat, message_field])
+    # def route_change(route) -> None:
+    #     if page.route.startswith("/discussion/"):
+    #         coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
+    #         discussion(page, coffee_id)
+    #     elif page.route == "/coffees":
+    #         coffee_list(page)
+    #
+    #
+    # # Подписываемся на изменения маршрута
+    # page.on_route_change = route_change
+    # page.update()
 
 
 if __name__ == "__main__":
