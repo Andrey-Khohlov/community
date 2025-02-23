@@ -49,14 +49,20 @@ def coffee_list(page: ft.Page):
                         [
                             ft.Text(
                                 f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
-                                color=FONT_COLOR),
+                                color=FONT_COLOR,
+                            ),
                             ft.Text(
                                 f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
-                                color=FONT_COLOR),
+                                color=FONT_COLOR,
+                            ),
                             ft.Text(
                                 f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]},обжарка под {coffee["roasting_level"]}.',
-                                color=FONT_COLOR),
-                            ft.Text(coffee["description"], max_lines=3, color=FONT_COLOR),
+                                color=FONT_COLOR,
+                            ),
+                            ft.Text(
+                                coffee["description"], max_lines=3,
+                                color=FONT_COLOR,
+                            ),
                         ],
                     ),
                     padding=ft.padding.all(5),
@@ -70,21 +76,7 @@ def coffee_list(page: ft.Page):
         )
         cards_list.controls.append(card)
 
-    # page.add(cards_list)
-
-    return ft.View("/coffees", [cards_list])
-    # Обработка изменений маршрута
-    # def route_change(route) -> None:
-    #     if page.route.startswith("/discussion/"):
-    #         coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
-    #         discussion(page, coffee_id)
-    #     elif page.route == "/coffees":
-    #         coffee_list(page)
-    #
-    #
-    # # Подписываемся на изменения маршрута
-    # page.on_route_change = route_change
-    # page.update()
+    return ft.View("/coffees", [cards_list], bgcolor=MINOR_COLOR)
 
 if __name__ == "__main__":
     if os.getenv("DOCKER_ENV") == "true":

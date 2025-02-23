@@ -11,7 +11,7 @@ from . import API_URL
 FONT_COLOR = 'black'
 MAIN_COLOR = '#FFC09876'  # Classic Mocka
 MEDIUM_COLOR = '#FFB15616'  # Pantone 18-1421 Baltic Amber
-MINOR_COLOR = '#FF9E7C6B' # Pantone 17-1230 Mocka Moussed
+MINOR_COLOR = '#FF966E50'  # Dark Mocha
 # '#FFD2B496'  # Light Mocha
 # '#FFC4B6A6'  # PANTON 15-1317 Sirocco
 # '#FFB15616'  # Pantone 18-1421 Baltic Amber
@@ -24,7 +24,7 @@ class Message:
         self.text = text
 
 def on_hover(e):
-    e.control.bgcolor = '#FF966E50' if e.data == "true" else '#FFC09876' # '#FF5A4A42'
+    e.control.bgcolor = MAIN_COLOR if e.data == "true" else MINOR_COLOR
     e.control.update()
 
 def get_initials(user_name: str):
@@ -67,8 +67,8 @@ class ChatMessage(ft.Row):
         self.expand = True
         self.controls=[
                 ft.CircleAvatar(
-                    content=ft.Text(get_initials(message.user)),
-                    color=ft.Colors.WHITE,
+                    content=ft.Text(get_initials(message.user), weight=ft.FontWeight.BOLD, size=28),
+                    color=MAIN_COLOR,
                     bgcolor=get_avatar_color(message.user),
                 ),
                 ft.Column(
@@ -256,43 +256,32 @@ def discussion(page: ft.Page, coffee_id: int = 1):
             [
                 ft.Text(
                     f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
-                    color=FONT_COLOR),
+                    color=FONT_COLOR,
+                ),
                 ft.Text(
                     f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
-                    color=FONT_COLOR),
+                    color=FONT_COLOR,
+                ),
                 ft.Text(
                     f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]},обжарка под {coffee["roasting_level"]}.',
-                    color=FONT_COLOR),
-                ft.Text(coffee["description"], max_lines=3, color=FONT_COLOR),
+                    color=FONT_COLOR,
+                ),
+                ft.Text(
+                    coffee["description"], max_lines=3,
+                    color=FONT_COLOR,
+                ),
             ],
             scroll=ft.ScrollMode.AUTO,
         ),
         height=140,
+        bgcolor=MINOR_COLOR,
         # expand=True,
         on_hover=on_hover,
         border_radius=10,
     )
 
-    # page.add(
-    #     card,  # Отображение данных о кофе
-    #     # ft.Divider(),  # Отображение комментариев
-    #     # container,
-    #     chat,
-    #     message_field,
-    #     )
 
-    return ft.View("/discussion/{coffee_id}", [card, chat, message_field])
-    # def route_change(route) -> None:
-    #     if page.route.startswith("/discussion/"):
-    #         coffee_id = int(page.route.split("/")[-1] ) # Извлекаем ID кофе из URL
-    #         discussion(page, coffee_id)
-    #     elif page.route == "/coffees":
-    #         coffee_list(page)
-    #
-    #
-    # # Подписываемся на изменения маршрута
-    # page.on_route_change = route_change
-    # page.update()
+    return ft.View("/discussion/{coffee_id}", [card, chat, message_field], bgcolor=MAIN_COLOR)
 
 
 if __name__ == "__main__":
