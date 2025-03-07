@@ -1,0 +1,7 @@
+https://habr.com/ru/companies/nixys/articles/665126/
+
+команда для парсинга логов за последние 10000 и вывод в top IP адресов, встречающихся наиболее часто:
+tail -10000 /var/log/nginx/access.log | awk '{print $1}'| sort -nr | uniq -c | sort -nr | head
+
+
+

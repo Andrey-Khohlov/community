@@ -18,6 +18,7 @@ class RoastingLevel(enum.Enum):
     filter = "фильтр"
     spro = "эспрессо"
     milk = "под молоко"
+    omni = "омни"
 
 
 class Model(DeclarativeBase):

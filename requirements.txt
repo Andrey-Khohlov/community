@@ -15,7 +15,7 @@ email_validator==2.2.0
 exceptiongroup==1.2.2
 fastapi==0.115.6
 fastapi-cli==0.0.7
-flet==0.26.0
+flet~=0.26.0.dev3954
 flet-cli==0.26.0
 flet-core==0.24.1
 flet-desktop==0.26.0
@@ -69,3 +69,5 @@ watchdog==4.0.2
 watchfiles==1.0.3
 websockets==14.1
 zxcvbn==4.4.28
+
+alembic~=1.15.1

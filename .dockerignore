@@ -1,5 +1,7 @@
 .env
+alembic.ini
 /db
 /lessons
 /tests
 /dev
+/alembic

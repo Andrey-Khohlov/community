@@ -236,7 +236,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                                      ]
                                 )
 
-    page.title = f"{coffee.get('title', 'None')} - кофе, о котом говорят"
+    page.title = f"{coffee.get('title', 'None')} - кофе, о котором говорят"
 
     # подгружаем комменты из базы
     chat = ft.ListView(

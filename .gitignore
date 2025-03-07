@@ -4,3 +4,4 @@
 /.idea/
 /frontend/chat.py
 /db
+/alembic.ini
