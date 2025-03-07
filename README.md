@@ -49,10 +49,12 @@ sudo chown -R $USER:$USER /home/xgb/PycharmProjects/coffee_chat/db
 - подключиться к базе:
 
 <code>
-docker-compose exec db /bin/bash
+docker compose exec db /bin/bash
  
-psql -U myuser -d mydatabase
+psql -U postgres -d postgres
 </code>
+
+\d users
 
 - проверить и убить процессы
 
@@ -68,3 +70,20 @@ sudo kill -9 <PID>
 docker exec <container_id> pg_dumpall -U <username> > backup_all.sql
 </code>
 
+- сжать логи
+
+<code>
+sudo journalctl --vacuum-size=100M 
+</code>
+
+- проверить Dos/DDoS атаки
+
+<code>
+tail -10000 /var/log/nginx/access.log | awk '{print $1}'| sort -nr | uniq -c | sort -nr | head
+
+tail -10000 /var/log/nginx/unauthorized.access.log | awk '{print $1}'| sort -nr | uniq -c | sort -nr | head
+</code>
+
+# Alembic
+alembic revision --autogenerate -m "Add new column"
+alembic upgrade head

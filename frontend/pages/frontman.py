@@ -7,7 +7,7 @@ from .discussion import discussion
 
 def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.SYSTEM
-    page.title = "Coffee frontman"
+    page.title = "Q90 online"
 
     def route_change(route):
         page.views.clear()

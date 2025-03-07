@@ -12,6 +12,7 @@ from app.config import settings
 config = context.config
 # Устанавливаем URL базы данных из настроек
 config.set_main_option('sqlalchemy.url', settings.DATABASE_URL_psycopg)
+# TODO config.set_main_option('sqlalchemy.url', 'postgresql+psycopg://postgres:relfhtim@localhost:5432/tmp')
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -21,8 +22,13 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from app.db import models
-target_metadata = models.Model.metadata
+from app.db.models import Model
+from app.db.models.coffees import *
+from app.db.models.comments import *
+from app.db.models.users import *
+from app.db.models.reviews import *
+
+target_metadata = Model.metadata
 # target_metadata = None
 
 # other values from the config, defined by the needs of env.py,

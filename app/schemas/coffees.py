@@ -2,27 +2,34 @@ from pydantic import BaseModel
 
 
 class CoffeesAddSchema(BaseModel):
-    roaster: str  # Обжарщик
-    roasting_level: str  # Обжарка
+
     title: str  # Название
-    description: str  # Описание
-    price: int  # Цена
-    weight: int  # Вес
-    q_grade_rating: float  # Q-оценка
+    yield_: int  # Урожай
+    processing: str  # Обработка
+    variety: str  # Разновидность
+    height_min: int  # Высота произрастания
+    height_max: int  # Высота произрастания
+
     origin: str  # Страна
     region: str  # Регион
     farm: str  # Ферма/Станция
     farmer: str  # Производитель
-    variety: str  # Разновидность
-    processing: str  # Обработка
-    height_min: int  # Высота произрастания
-    height_max: int  # Высота произрастания
-    yield_: int  # Урожай
+
+    roaster: str  # Обжарщик
+    price: int  # Цена
+    weight: int  # Вес
+    q_grade_rating: float  # Q-оценка
     rating: float  # Рейтинг
     reviews: int  # Оценок
     comments: int  # Комментариев
-    pack_img: str
+    roasting_level: str  # Обжарка
 
+    description: str  # Описание
+
+    pack_img: str
+    updated_at: str
+    exporter: str
+    created_by: int
 
 class CoffeesSchema(CoffeesAddSchema):
     id: int
