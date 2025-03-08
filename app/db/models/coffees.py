@@ -1,6 +1,6 @@
 from sqlalchemy.orm import  Mapped, mapped_column
 
-from app.db.models import Model, intpk, created_at, updated_at, RoastingLevel
+from app.db.models import Model, intpk, created_at, updated_at, RoastingLevel, str_256
 
 
 class CoffeesAddModel(Model):
@@ -8,17 +8,17 @@ class CoffeesAddModel(Model):
     id: Mapped[intpk]
     created_at: Mapped[created_at]
     # 1 строка
-    title: Mapped[str]
+    title: Mapped[str_256]
     yield_: Mapped[int]
-    processing: Mapped[str]
-    variety: Mapped[str]
+    processing: Mapped[str_256]
+    variety: Mapped[str_256]
     height_min: Mapped[int]
     height_max: Mapped[int]
     # 2 строка
-    origin: Mapped[str]
-    region: Mapped[str]
-    farm: Mapped[str]
-    farmer: Mapped[str]
+    origin: Mapped[str_256]
+    region: Mapped[str_256]
+    farm: Mapped[str_256]
+    farmer: Mapped[str_256]
     # 3 строка
     roaster: Mapped[str]
     price: Mapped[int]
@@ -32,9 +32,13 @@ class CoffeesAddModel(Model):
     description: Mapped[str]
     # не выводится
     pack_img: Mapped[str]
-    updated_at: Mapped[updated_at]
-    exporter: Mapped[str]
     created_by: Mapped[int]
+    notes: Mapped[str]
+    updated_at: Mapped[updated_at]
+    exporter: Mapped[str_256]
+    importer: Mapped[str_256]
+    subregion: Mapped[str_256]
+    plant: Mapped[str_256]
 
 # class CoffeeChatsModel(Model):
 #     """ Создание таблицы

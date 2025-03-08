@@ -27,9 +27,14 @@ class CoffeesAddSchema(BaseModel):
     description: str  # Описание
 
     pack_img: str
+    created_by: int
+    notes: str
     updated_at: str
     exporter: str
-    created_by: int
+    importer: str
+    subregion: str
+    plant: str
+
 
 class CoffeesSchema(CoffeesAddSchema):
     id: int
