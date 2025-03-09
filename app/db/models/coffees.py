@@ -7,38 +7,43 @@ class CoffeesAddModel(Model):
     __tablename__: str = "coffees"
     id: Mapped[intpk]
     created_at: Mapped[created_at]
-    # 1 строка
-    title: Mapped[str_256]
-    yield_: Mapped[int]
-    processing: Mapped[str_256]
-    variety: Mapped[str_256]
-    height_min: Mapped[int]
-    height_max: Mapped[int]
-    # 2 строка
+    # 1 строка место
     origin: Mapped[str_256]
     region: Mapped[str_256]
+    locality: Mapped[str_256]
     farm: Mapped[str_256]
     farmer: Mapped[str_256]
-    # 3 строка
+    cooperatives: Mapped[str_256]
+    mill: Mapped[str_256]
+    latitude: Mapped[float]  # указывает на ферму или милл или кооператив или локалити
+    longitude: Mapped[float]
+    exporter: Mapped[str_256]
+    importer: Mapped[str_256]
+    # 2 строка зерно
+    variety: Mapped[str_256]
+    processing: Mapped[str_256]
+    height_min: Mapped[int]
+    height_max: Mapped[int]
+    yield_: Mapped[int]
+    # 3 строка обжар
     roaster: Mapped[str]
     price: Mapped[int]
     weight: Mapped[int]
+    roasting_level: Mapped[RoastingLevel]
+    title: Mapped[str_256]  # без указания страны в названии
+    description: Mapped[str]
+    # 4 строка оценки
     q_grade_rating: Mapped[float]
     rating: Mapped[float]
     reviews: Mapped[int]
     comments: Mapped[int]
-    roasting_level: Mapped[RoastingLevel]
-    # 4 строка
-    description: Mapped[str]
+    tags: Mapped[str]
+    notes: Mapped[str]
+
     # не выводится
     pack_img: Mapped[str]
     created_by: Mapped[int]
-    notes: Mapped[str]
     updated_at: Mapped[updated_at]
-    exporter: Mapped[str_256]
-    importer: Mapped[str_256]
-    subregion: Mapped[str_256]
-    plant: Mapped[str_256]
 
 # class CoffeeChatsModel(Model):
 #     """ Создание таблицы
