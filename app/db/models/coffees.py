@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import  Mapped, mapped_column
 
 from app.db.models import Model, intpk, created_at, updated_at, RoastingLevel, str_256
@@ -15,8 +16,7 @@ class CoffeesAddModel(Model):
     farmer: Mapped[str_256]
     cooperatives: Mapped[str_256]
     mill: Mapped[str_256]
-    latitude: Mapped[float]  # указывает на ферму или милл или кооператив или локалити
-    longitude: Mapped[float]
+    coordinates: Mapped[dict | None] = mapped_column(JSONB, nullable=True)   # указывает на ферму или милл или кооператив или локалити
     exporter: Mapped[str_256]
     importer: Mapped[str_256]
     # 2 строка зерно

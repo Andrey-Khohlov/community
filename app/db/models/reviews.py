@@ -1,8 +1,9 @@
 from typing import Optional
 
+from pydantic import confloat
 from sqlalchemy.orm import  Mapped, mapped_column
 
-from app.db.models import Model, str_256, intpk, created_at, updated_at
+from app.db.models import Model, str_256, intpk, created_at, updated_at, BrewMethod
 
 
 class ReviewsAddModel(Model):
@@ -12,19 +13,22 @@ class ReviewsAddModel(Model):
     coffee_id: Mapped[int]
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
-    rating_2: Mapped[int]=mapped_column(default=0)
-    rating_4: Mapped[Optional[int]]
-    rating_20: Mapped[Optional[int]]
-    tags: Mapped[Optional[str]]
-    pack_img: Mapped[Optional[str]]
-    method: Mapped[str]
-    receipt: Mapped[Optional[str]]
-    water: Mapped[str]
-    water_ppm: Mapped[Optional[int]]
-    water_pH: Mapped[Optional[float]]
-    water_receipt: Mapped[Optional[str]]
-    temperature: Mapped[Optional[int]]
+
+    rating: Mapped[Optional[float]]
+
+    method: Mapped[BrewMethod]
+
     grinder: Mapped[Optional[str]]
-    grinding: Mapped[Optional[str]]
-    filter: Mapped[Optional[str]]
-    cafe: Mapped[Optional[str]]
+    grinding: Mapped[Optional[float]]
+    filter: Mapped[Optional[str_256]]
+    water: Mapped[str]
+    temperature: Mapped[Optional[int]]
+    brew_time: Mapped[Optional[str_256]]
+    receipt: Mapped[Optional[str]]
+
+    cafe: Mapped[Optional[str_256]]
+
+    experience: Mapped[Optional[str]]
+    tags: Mapped[Optional[str]]
+
+    pack_img: Mapped[Optional[str]]

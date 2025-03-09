@@ -12,6 +12,19 @@ rating_20            - Оценка от 80 до 100
 created_at           - Дата отзыва
 pack_img             - Фото пачки
 method               - V60, джезва, эспрессо, мокка...
+    Эспрессо
+    Пуровер
+    Капельная кофеварка
+    Джезва
+    Френч-пресс
+    Гейзерная кофеварка
+    Иммерсионная воронка
+    В чашке
+    Аэропресс
+    Капсулы
+    Дрип-пакеты
+    Брю-бэги
+
 receipt              - рецепт приготовления
 water
 water_ppm
@@ -22,30 +35,33 @@ grinder
 grinding
 filter ?
 cafe                 - last 5: кафе'''
+from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, confloat
 
 
 class ReviewsAddSchema(BaseModel):
     user_id: int
     coffee_id: int
-    tags: str
-    rating_2: int
-    rating_4: int | None
-    rating_20: int | None
-    pack_img: str
+
+    rating: Optional[confloat(ge=1, le=5.9)]
+
     method: str
-    receipt: str
-    water: str
-    water_ppm: int
-    water_pH: float
-    water_receipt: str
-    temperature: int
+
     grinder: str
-    grinding: str
+    grinding: float
     filter: str
+    water: str
+    temperature: int
+    brew_time: str
+    receipt: str
+
     cafe: str
 
+    experience: str
+    tags: str
+
+    pack_img: str
 
 class ReviewsSchema(ReviewsAddSchema):
     id: int

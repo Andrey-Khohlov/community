@@ -1,5 +1,10 @@
+from typing import Dict
+
 from pydantic import BaseModel
 
+class Coordinates(BaseModel):
+    latitude: float
+    longitude: float
 
 class CoffeesAddSchema(BaseModel):
 
@@ -10,10 +15,10 @@ class CoffeesAddSchema(BaseModel):
     farm: str  # Ферма/Станция
     farmer: str  # Производитель
     mill: str
+    coordinates: Coordinates | None = None  # {"latitude": 6.2000, "longitude": 38.1500}
     exporter: str
     importer: str
-    latitude: float
-    longitude: float
+
 
     variety: str  # Разновидность
     processing: str  # Обработка

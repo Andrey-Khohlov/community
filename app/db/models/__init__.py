@@ -20,6 +20,19 @@ class RoastingLevel(enum.Enum):
     milk = "под молоко"
     omni = "омни"
 
+class BrewMethod(enum.Enum):
+    espresso = "эспрессо"
+    pourover = "пуровер"
+    drip_coffee_maker = "капельная кофеварка"
+    cezve = "джезва"
+    french_press = "френч-пресс"
+    mokka = "гейзерная кофеварка"
+    immerse = "иммерсионная воронка"
+    in_cup = "в чашке"
+    aeropress = "аэропресс"
+    capsules = "капсула"
+    drip = "дрип-пакет"
+    brew_bag = "брю-бэг"
 
 class Model(DeclarativeBase):
     type_annotation_map = {
