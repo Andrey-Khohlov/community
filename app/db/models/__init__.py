@@ -14,6 +14,14 @@ created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIM
 updated_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', NOW())"), onupdate=datetime.datetime.utcnow)]
 str_256 = Annotated[str, mapped_column(String(256))]
 
+class Model(DeclarativeBase):
+    type_annotation_map = {
+        "intpk": intpk,
+        "created_at": created_at,
+        "updated_at": updated_at,
+        "str_256": str_256
+    }
+
 class RoastingLevel(enum.Enum):
     filter = "фильтр"
     spro = "эспрессо"
@@ -34,10 +42,42 @@ class BrewMethod(enum.Enum):
     drip = "дрип-пакет"
     brew_bag = "брю-бэг"
 
-class Model(DeclarativeBase):
-    type_annotation_map = {
-        "intpk": intpk,
-        "created_at": created_at,
-        "updated_at": updated_at,
-        "str_256": str_256
-    }
+class CoffeeProcessing(enum.Enum):
+    washed = "мытая"
+    natural = "натуральная"
+    honey = "хани"
+    aerobic = "аэробная"
+    aerobic_washed = "аэробная мытая"
+    aerobic_natural = "аэробная натуральная"
+    aerobic_honey = "аэробная хани"
+    anaerobic = "анаэробная"
+    anaerobic_natural = "анаэробная натуральная"
+    anaerobic_honey = "анаэробная хани"
+    anaerobic_carbonic = "анаэробная углекислотная мацерация"
+    anaerobic_lacto = "анаэробная лактоферментация"
+    infuse = "инфьюз"
+    gilling = "гиллинг - басах"
+    wet_halling = "вэт - халл"
+    half_dry = "полусухая"
+    copi = "копи лювак"
+    mixture = "смесь"
+
+class Origin(enum.Enum):
+    BR = "Бразилия"
+    GT = "Гватемала"
+    CO = "Колумбия"
+    KE = "Кения"
+    ZW = "Зимбабве"
+    ET = "Эфиопия"
+    PE = "Перу"
+    IN = "Индия"
+    VN = "Вьетнам"
+    ID = "Индонезия"
+    ID_ = "Индонезия Ява"
+    CR = "Коста-Рика"
+    MX = "Мексика"
+    SV = "Сальвадор"
+    HN = "Гондурас"
+    NI = "Никарагуа"
+    RW = "Руанда"
+    CN = "Китай"

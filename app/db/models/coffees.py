@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import  Mapped, mapped_column
 
-from app.db.models import Model, intpk, created_at, updated_at, RoastingLevel, str_256
+from app.db.models import Model, intpk, created_at, updated_at, RoastingLevel, str_256, CoffeeProcessing, Origin
 
 
 class CoffeesAddModel(Model):
@@ -9,7 +9,7 @@ class CoffeesAddModel(Model):
     id: Mapped[intpk]
     created_at: Mapped[created_at]
     # 1 строка место
-    origin: Mapped[str_256]
+    origin: Mapped[Origin]
     region: Mapped[str_256]
     locality: Mapped[str_256]
     farm: Mapped[str_256]
@@ -21,7 +21,7 @@ class CoffeesAddModel(Model):
     importer: Mapped[str_256]
     # 2 строка зерно
     variety: Mapped[str_256]
-    processing: Mapped[str_256]
+    processing: Mapped[CoffeeProcessing]
     height_min: Mapped[int]
     height_max: Mapped[int]
     yield_: Mapped[int]
