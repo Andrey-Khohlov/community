@@ -1,3 +1,6 @@
+from enum import Enum as PyEnum
+from sqlalchemy import Enum
+
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import  Mapped, mapped_column
 
@@ -8,8 +11,9 @@ class CoffeesAddModel(Model):
     __tablename__: str = "coffees"
     id: Mapped[intpk]
     created_at: Mapped[created_at]
+    updated_at: Mapped[updated_at]
     # 1 строка место
-    origin: Mapped[Origin]
+    origin: Mapped[Origin] = mapped_column(Enum(Origin, name="origin_enum"))
     region: Mapped[str_256]
     locality: Mapped[str_256]
     farm: Mapped[str_256]
@@ -21,7 +25,7 @@ class CoffeesAddModel(Model):
     importer: Mapped[str_256]
     # 2 строка зерно
     variety: Mapped[str_256]
-    processing: Mapped[CoffeeProcessing]
+    processing: Mapped[CoffeeProcessing] = mapped_column(Enum(CoffeeProcessing, name="processing_enum"))
     height_min: Mapped[int]
     height_max: Mapped[int]
     yield_: Mapped[int]
@@ -43,7 +47,7 @@ class CoffeesAddModel(Model):
     # не выводится
     pack_img: Mapped[str]
     created_by: Mapped[int]
-    updated_at: Mapped[updated_at]
+
 
 # class CoffeeChatsModel(Model):
 #     """ Создание таблицы

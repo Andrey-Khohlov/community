@@ -11,7 +11,7 @@ from sqlalchemy.orm import DeclarativeBase, mapped_column
 # Model = declarative_base()
 intpk = Annotated[int, mapped_column(primary_key=True)]
 created_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', NOW())"))]
-updated_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', NOW())"), onupdate=datetime.datetime.utcnow)]
+updated_at = Annotated[datetime.datetime, mapped_column(server_default=text("TIMEZONE('utc', NOW())"), onupdate=datetime.datetime.utcnow())]
 str_256 = Annotated[str, mapped_column(String(256))]
 
 class Model(DeclarativeBase):
@@ -42,7 +42,7 @@ class BrewMethod(enum.Enum):
     drip = "дрип-пакет"
     brew_bag = "брю-бэг"
 
-class CoffeeProcessing(enum.Enum):
+class CoffeeProcessing( enum.Enum):
     washed = "мытая"
     natural = "натуральная"
     honey = "хани"
@@ -61,6 +61,7 @@ class CoffeeProcessing(enum.Enum):
     half_dry = "полусухая"
     copi = "копи лювак"
     mixture = "смесь"
+
 
 class Origin(enum.Enum):
     BR = "Бразилия"
