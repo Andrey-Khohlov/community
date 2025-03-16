@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем исходный код фронтенда
 COPY ./frontend /code/frontend
+COPY ./app/schemas /code/app/schemas
 
 # Указываем порт, который будет использовать приложение
 EXPOSE 8550
