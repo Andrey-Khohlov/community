@@ -76,9 +76,30 @@ sudo journalctl --vacuum-size=100M
 tail -10000 /var/log/nginx/access.log | awk '{print $1}'| sort -nr | uniq -c | sort -nr | head
 tail -10000 /var/log/nginx/unauthorized.access.log | awk '{print $1}'| sort -nr | uniq -c | sort -nr | head
 ```
-
+- сертификаты HTTPS
+```
+sudo certbot certificates
+xgb@xgb-MS-7788:~$ cat /etc/crontab  # из директории к которой применяллся крон, здесь: xgb@xgb-MS-7788:~$ 
+sudo /opt/certbot/bin/pip install --upgrade certbot certbot-nginx  # ежемесячно
+```
+- восстановлеие базы из резервной копии на google
+- восстановлеие базы из резервной копии на диске
 ## Alembic
 ```
 alembic revision --autogenerate -m "Add new column"
 alembic upgrade head
+```
+
+## Nginx
+``` 
+sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.backup
+sudo nano /etc/nginx/sites-available/default
+sudo nginx -t
+sudo systemctl restart nginx
+sudo tail -f /var/log/nginx/error.log
+```
+## Fierwall
+```
+sudo ufw allow 443/tcp
 ```

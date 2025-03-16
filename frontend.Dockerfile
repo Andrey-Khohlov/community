@@ -2,7 +2,7 @@
 FROM python:3.10-slim
 
 # Устанавливаем рабочую директорию
-WORKDIR /frontend
+WORKDIR /code
 
 # Копируем зависимости
 COPY requirements.txt .
@@ -11,7 +11,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем исходный код фронтенда
-COPY . .
+COPY ./frontend /code/frontend
 
 # Указываем порт, который будет использовать приложение
 EXPOSE 8550
