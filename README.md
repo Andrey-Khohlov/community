@@ -33,7 +33,10 @@ docker compose up
 sudo lsof -i :8550
 sudo kill -9 <PID>
 ```
-
+- активация виртуальной среды
+```commandline
+source .venv/bin/activate
+```
 ## База данных
 - проверка базы
 
