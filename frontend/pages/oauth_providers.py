@@ -37,6 +37,12 @@ def main(page: ft.Page):
         print("Login error:", e.error)
         print("Access token:", page.auth.token.access_token)
         print("User ID:", page.auth.user.id)
+        print("Name:", page.auth.user["name"])
+        print("Login:", page.auth.user["login"])
+        print("Email:", page.auth.user["email"])
+        print("Avatar:", page.auth.user["avatar_url"])
+        print("location:", page.auth.user[""])
+        # print("user", page.auth.user)
 
     page.on_login = on_login
     page.add(ft.ElevatedButton("Войти с Google", on_click=google_provider_login_click))
