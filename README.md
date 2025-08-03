@@ -102,7 +102,11 @@ sudo nginx -t
 sudo systemctl restart nginx
 sudo tail -f /var/log/nginx/error.log
 ```
+логи `/var/log/nginx`
 ## Fierwall
 ```
 sudo ufw allow 443/tcp
 ```
+
+## GitHub
+https://github.com/settings/apps

@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     DB_PASS: str
     DB_NAME: str
     env_path: Path
+    OAUTH_GOOGLE_CLIENT_SECRET: str
+    OAUTH_GOOGLE_CLIENT_ID: str
+    OAUTH_GITHUB_CLIENT_SECRET: str
+    OAUTH_GITHUB_CLIENT_ID: str
+
 
     if os.getenv("DOCKER_ENV") == "true":
         os.environ["DB_HOST"] = "db"
