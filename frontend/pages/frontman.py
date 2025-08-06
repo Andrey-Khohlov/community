@@ -26,4 +26,4 @@ if __name__ == "__main__":
     if os.getenv("DOCKER_ENV") == "true":
         ft.app(target=main, view=ft.WEB_BROWSER, port=8550)  # host="0.0.0.0",
     else:
-        ft.app(target=main, view=ft.AppView.WEB_BROWSER, port=8550)
+        ft.app(target=main, view=ft.WEB_BROWSER, port=8550)  # , assets_dir="assets",   AppView.W

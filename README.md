@@ -108,5 +108,3 @@ sudo tail -f /var/log/nginx/error.log
 sudo ufw allow 443/tcp
 ```
 
-## GitHub
-https://github.com/settings/apps
