@@ -4,7 +4,7 @@ import flet as ft
 from flet.auth.providers import GoogleOAuthProvider, GitHubOAuthProvider
 
 from app.config import settings
-from .oauth_v1 import login_page
+from .oauth import login_page
 from .coffees import coffee_list
 from .discussion import discussion
 
