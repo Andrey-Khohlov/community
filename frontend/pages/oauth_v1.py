@@ -44,6 +44,7 @@ def login_page(page: ft.Page, redirect_route="/"):
             ],
             spacing=10,
         ),
+        width=240,  # Фиксированная ширина
         on_click=lambda e: page.login_async(google_provider, scope=["openid", "email", "profile"])
     )
     login_github_btn = ft.ElevatedButton(
@@ -58,6 +59,7 @@ def login_page(page: ft.Page, redirect_route="/"):
             ],
             spacing=10,
         ),
+        width=240,  # Фиксированная ширина
         on_click=lambda e: page.login_async(github_provider, scope=["user:email"])
     )
     login_google_btn.on_click = login_google
