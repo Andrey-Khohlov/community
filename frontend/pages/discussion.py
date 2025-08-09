@@ -125,33 +125,38 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         user = page.session.get("user")
         if not user:
             # Если пользователь не авторизован, открываем диалог регистрации
-            welcome_dlg.open = True
-            page.overlay.append(welcome_dlg)  # Добавляем диалог в overlay
-            page.update()
-            return
-        else:
-            # сохраняем сообщение пользователя в базу данных сообщений
-            new_message_json = CommentsAddSchema(
-                product_id=coffee["id"],
-                user_id=user["id"],
-                content=new_message.value,
-                parent_id=0,
-                review_id=0,
-            )
+            # welcome_dlg.open = True
+            # page.overlay.append(welcome_dlg)  # Добавляем диалог в overlay
+            # page.update()
+            # return
 
-            # Запрос к API
-            response_post = requests.post(
-                    f"{API_URL}/v1/comments/",
-                    json=new_message_json.model_dump(),
-                    headers={"Content-Type": "application/json"},
-                )
-            if response_post.status_code == 200:
-                page.pubsub.send_all(Message(user=user["username"], text=new_message.value))
-                new_message.value = ""
-            else:
-                print(f"Ошибка: {response_post.status_code}, {response_post.text}")
-                page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
-            page.update()
+            # Если пользователь не авторизован, перенаправляем на страницу логина
+            page.session.set("return_url", page.route)
+            page.go(f"/login")
+        #     return
+        # else:
+        # сохраняем сообщение пользователя в базу данных сообщений
+        new_message_json = CommentsAddSchema(
+            product_id=coffee["id"],
+            user_id=user["id"],
+            content=new_message.value,
+            parent_id=0,
+            review_id=0,
+        )
+
+        # Запрос к API
+        response_post = requests.post(
+                f"{API_URL}/v1/comments/",
+                json=new_message_json.model_dump(),
+                headers={"Content-Type": "application/json"},
+            )
+        if response_post.status_code == 200:
+            page.pubsub.send_all(Message(user=user["username"], text=new_message.value))
+            new_message.value = ""
+        else:
+            print(f"Ошибка: {response_post.status_code}, {response_post.text}")
+            page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
+        page.update()
 
     # Поле для ввода
     new_message = ft.TextField(

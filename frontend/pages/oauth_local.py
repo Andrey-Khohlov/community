@@ -5,7 +5,7 @@ import flet as ft
 from flet.auth.providers import GoogleOAuthProvider, GitHubOAuthProvider
 
 
-def main(page: ft.Page):
+def login_page(page: ft.Page):
     # Настройка провайдеров
     google_provider = GoogleOAuthProvider(
         client_id=settings.OAUTH_GOOGLE_CLIENT_ID,
@@ -19,10 +19,6 @@ def main(page: ft.Page):
         redirect_url="http://localhost:8550/oauth_callback"
     )
 
-    # Элементы UI
-    # login_google_btn = ft.ElevatedButton("Login with Google", visible=True)
-    # login_github_btn = ft.ElevatedButton("Login with GitHub", visible=True)
-
     # Создаем кнопки с иконками
     login_google_btn = ft.ElevatedButton(
         content=ft.Row(
@@ -32,7 +28,7 @@ def main(page: ft.Page):
                     width=24,
                     height=24,
                 ),
-                ft.Text("Войти через Google"),
+                ft.Text("войти через Google"),
             ],
             spacing=10,
         ),
@@ -50,7 +46,7 @@ def main(page: ft.Page):
                     width=24,
                     height=24,
                 ),
-                ft.Text("Войти через GitHub"),
+                ft.Text("войти через GitHub"),
             ],
             spacing=10,
         ),
@@ -124,10 +120,13 @@ def main(page: ft.Page):
     page.on_login = on_login
     page.on_logout = on_logout
 
-    # Добавляем элементы на страницу
+    # Инициализация UI
+    toggle_ui()
+
+    # Собираем страницу
     page.add(
         ft.Column([
-            ft.Text("Login with:", size=20),
+            ft.Text("Авторизоваться:", size=20),
             ft.Row([login_google_btn, login_github_btn], spacing=10),
             logout_btn,
             user_info,
@@ -135,8 +134,7 @@ def main(page: ft.Page):
         ], spacing=15)
     )
 
-    # Инициализация UI
-    toggle_ui()
+    return
 
-
-ft.app(main, port=8550, view=ft.WEB_BROWSER, assets_dir="assets")
+if __name__ == "__main__":
+    ft.app(login_page, port=8550, view=ft.WEB_BROWSER, assets_dir="assets")

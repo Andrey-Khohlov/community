@@ -7,7 +7,7 @@ from fastapi import  FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1.endpoints import coffees, users, reviews, comments, auth
+from app.api.v1.endpoints import coffees, users, reviews, comments, auth_test
 
 
 app = FastAPI()  #lifespan=lifespan)
@@ -25,7 +25,7 @@ app.include_router(coffees.router, prefix="/v1/coffees", tags=["coffees"])
 app.include_router(users.router, prefix="/v1/users", tags=["users"])
 app.include_router(reviews.router, prefix="/v1/reviews", tags=["reviews"])
 app.include_router(comments.router, prefix="/v1", tags=["comments"])
-app.include_router(auth.router, prefix="/v1", tags=["auth"])
+# app.include_router(auth.router, prefix="/v1", tags=["auth"])
 
 
 if __name__ == "__main__":
