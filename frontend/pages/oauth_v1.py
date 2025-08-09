@@ -33,11 +33,31 @@ def login_page(page: ft.Page, redirect_route="/"):
         )
 
     login_google_btn = ft.ElevatedButton(
-        text="Войти через Google",
+        content=ft.Row(
+            [
+                ft.Image(
+                    src="images/google-logo.svg",
+                    width=24,
+                    height=24,
+                ),
+                ft.Text("войти через Google"),
+            ],
+            spacing=10,
+        ),
         on_click=lambda e: page.login_async(google_provider, scope=["openid", "email", "profile"])
     )
     login_github_btn = ft.ElevatedButton(
-        text="Войти через GitHub",
+        content=ft.Row(
+            [
+                ft.Image(
+                    src="images/github-logo.svg",
+                    width=24,
+                    height=24,
+                ),
+                ft.Text("войти через GitHub"),
+            ],
+            spacing=10,
+        ),
         on_click=lambda e: page.login_async(github_provider, scope=["user:email"])
     )
     login_google_btn.on_click = login_google
@@ -102,10 +122,18 @@ def login_page(page: ft.Page, redirect_route="/"):
                 provider_id = page.auth.user["sub"]
                 user = check_user(username, email, provider_id, provider)
                 page.session.set("user", user)
-            else:
+            elif isinstance(page.auth.provider, GitHubOAuthProvider):
                 # TODO: добавить GitHub
-                print("GitHub login not implemented")
-                pass
+                provider = 'GitHub'
+                username = page.auth.user["login"]
+                email = page.auth.user["email"]
+                provider_id = page.auth.user["id"]
+                user = check_user(username, email, provider_id, provider)
+                page.session.set("user", user)
+
+            else:
+                print("Login provider not implemented")
+
             toggle_ui()
             # Перенаправление на сохранённый маршрут
             target = getattr(page, "redirect_after_login", "/")
@@ -128,7 +156,7 @@ def login_page(page: ft.Page, redirect_route="/"):
         controls=[
             ft.Column([
                 ft.Text("Авторизоваться:", size=20),
-                ft.Row([login_google_btn, login_github_btn], spacing=10),
+                ft.Column([login_google_btn, login_github_btn], spacing=10, alignment=ft.MainAxisAlignment.START),
                 logout_btn
             ])
         ]

@@ -94,10 +94,10 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         response.raise_for_status()  # Проверяем успешность запроса
     except httpx.RequestError as e:
         page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
-        return
+        return None
     except httpx.HTTPStatusError as e:
         page.add(ft.Text(f"HTTP Error: {e.response.status_code}", color="red"))
-        return
+        return None
 
     # Декодирование JSON-ответа
     try:
@@ -106,12 +106,12 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         coffee = response_data.get("coffee", {})
     except ValueError as e:
         page.add(ft.Text(f"Failed to parse JSON: {e}", color="red"))
-        return
+        return None
 
     # Убедитесь, что это список
     if not isinstance(comments, list):
         page.add(ft.Text("Error: Expected a list of comment reviews", color="red"))
-        return
+        return None
 
     def on_message(message: Message):
         # chat.controls.append(ft.Text(f"{message.user}: {message.text}"))
@@ -158,17 +158,6 @@ def discussion(page: ft.Page, coffee_id: int = 1):
             page.add(ft.Text(f"HTTP Error: {response_post.status_code}", color="red"))
         page.update()
 
-    # Поле для ввода
-    new_message = ft.TextField(
-        hint_text="Сообщение",
-        autofocus=True,
-        shift_enter=True,
-        min_lines=1,
-        max_lines=5,
-        filled=True,
-        expand=True,
-        on_submit=send_click,
-    )
 
     def join_chat_click(e):
         if not join_user_name.value:
@@ -230,6 +219,19 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         on_dismiss=lambda e: page.overlay.remove(welcome_dlg),  # Закрытие при клике вне диалога
     )
 
+    # Поле для ввода
+    new_message = ft.TextField(
+        hint_text="Сообщение",
+        autofocus=True,
+        shift_enter=True,
+        min_lines=1,
+        max_lines=5,
+        filled=True,
+        expand=True,
+        on_submit=send_click,
+        height=50,
+    )
+
     message_field = ft.Row(controls=
                                      [
                                          new_message,
@@ -240,7 +242,27 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                                         ),
                                      ]
                                 )
-
+    message_field = ft.Container(
+        content=ft.Row(
+            controls=[
+                ft.Container(
+                    content=new_message,
+                    expand=True,
+                    padding=ft.padding.only(right=5),  # Отступ между полем и кнопкой
+                ),
+                ft.IconButton(
+                    icon=ft.icons.SEND_ROUNDED,
+                    tooltip="Опубликовать сообщение",
+                    on_click=send_click,
+                    # height=40,  # Фиксированная высота кнопки
+                )
+            ],
+            alignment=ft.MainAxisAlignment.END,
+            vertical_alignment=ft.CrossAxisAlignment.END,  # Выравнивание по нижнему краю
+        ),
+        padding=ft.padding.symmetric(horizontal=5, vertical=0),  # Отступы вокруг всего блока
+        bgcolor=MINOR_COLOR,  # Цвет фона (если нужен)
+    )
     page.title = f"{coffee.get('title', 'None')} - кофе, о котором говорят"
 
     # подгружаем комменты из базы
@@ -256,37 +278,96 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         else:
             chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
 
-    # Создание карточки обсуждаемого кофе
-    card = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text(
-                    f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
-                    color=FONT_COLOR,
+    # Кнопка Войти
+    if not page.session.get("user"):
+        login_button = ft.ElevatedButton(
+            text="Войти",
+            on_click=lambda e: page.go("/login")
+        )
+    else:
+        login_button = ft.ElevatedButton(
+            content=ft.Text(
+                get_initials(page.session.get("user")["username"]),
+                weight=ft.FontWeight.BOLD,
+                size=20
+            ),
+            style=ft.ButtonStyle(
+                color=MAIN_COLOR,
+                bgcolor=get_avatar_color(page.session.get("user")["username"]),
+                padding=0,
+                shape=ft.CircleBorder(),  # скругляем под круг
+            ),
+            on_click=lambda e: page.go("/profile")
+        )
+
+    header = ft.Container(
+        content=ft.Stack(
+            controls=[
+                # Текст в колонке
+                ft.Column(
+                    controls=[
+                        ft.Text(
+                            f'{coffee["title"]}, урожай {coffee["yield_"]}, {coffee["processing"]}, {coffee["variety"]}, высота {coffee["height_min"] if coffee["height_min"] != coffee["height_max"] else " "} - {coffee["height_max"]} м.',
+                            color=FONT_COLOR,
+                            max_lines=3,
+                            overflow=ft.TextOverflow.ELLIPSIS,
+                        ),
+                        ft.Text(
+                            f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
+                            color=FONT_COLOR,
+                            max_lines=3,
+                            overflow=ft.TextOverflow.ELLIPSIS,
+                        ),
+                        ft.Text(
+                            f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]}, обжарка под {coffee["roasting_level"]}.',
+                            color=FONT_COLOR,
+                            max_lines=3,
+                            overflow=ft.TextOverflow.ELLIPSIS,
+                        ),
+                        ft.Text(
+                            coffee["description"],
+                            color=FONT_COLOR,
+                            max_lines=3,
+                            overflow=ft.TextOverflow.ELLIPSIS,
+                        ),
+                    ],
+                    spacing=-1,
+                    tight=True,  # Дополнительное уплотнение
                 ),
-                ft.Text(
-                    f'{coffee["origin"]}, {coffee["region"]}, ферма/станция: {coffee["farm"]}, производитель: {coffee["farmer"]}.',
-                    color=FONT_COLOR,
-                ),
-                ft.Text(
-                    f'{coffee["roaster"]}, {coffee["price"]} руб за {coffee["weight"]} г, Q-оценка: {coffee["q_grade_rating"]}, рейтинг: {coffee["rating"]}, отзывов: {coffee["reviews"]}, комментариев: {coffee["comments"]},обжарка под {coffee["roasting_level"]}.',
-                    color=FONT_COLOR,
-                ),
-                ft.Text(
-                    coffee["description"], max_lines=3,
-                    color=FONT_COLOR,
-                ),
+                # Кнопка поверх текста (в Stack)
+                ft.Container(
+                    content=login_button,
+                    alignment=ft.alignment.top_right,
+                    margin=ft.margin.only(top=1, right=1),  # небольшой отступ от краев
+                )
             ],
-            scroll=ft.ScrollMode.AUTO,
         ),
-        height=140,
         bgcolor=MINOR_COLOR,
-        # on_hover=on_hover,
+        padding=ft.padding.only(left=2, right=0, top=0, bottom=2),  # правый padding убираем
         border_radius=10,
     )
 
-    return ft.View("/discussion/{coffee_id}", [card, chat, message_field], bgcolor=MAIN_COLOR)
+    # 4. Собираем все вместе
+    return ft.View(
+        f"/discussion/{coffee['id']}",
+        controls=[
+            # Верхняя панель с текстом и кнопкой
+            header,
 
+            # Чат (занимает все пространство между header и message_field)
+            ft.Container(
+                content=chat,
+                expand=True,
+                padding=ft.padding.symmetric(horizontal=5),
+            ),
+
+            # Поле ввода внизу
+            message_field
+        ],
+        spacing=0,
+        padding=0,
+        bgcolor=MAIN_COLOR
+    )
 
 if __name__ == "__main__":
     ft.app(target=discussion)
