@@ -278,11 +278,16 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         else:
             chat.controls.append(ft.Text(f"Invalid data format: {comment}", color="orange"))
 
+    def on_login(e):
+        page.session.set("return_url", page.route)
+        page.go("/login")
+
     # Кнопка Войти
     if not page.session.get("user"):
         login_button = ft.ElevatedButton(
             text="Войти",
-            on_click=lambda e: page.go("/login")
+            # on_click=lambda e: page.go("/login")
+            on_click=on_login
         )
     else:
         login_button = ft.ElevatedButton(
@@ -297,7 +302,8 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                 padding=0,
                 shape=ft.CircleBorder(),  # скругляем под круг
             ),
-            on_click=lambda e: page.go("/profile")
+            # on_click=lambda e: page.go("/login")
+            on_click=on_login
         )
 
     header = ft.Container(
@@ -351,17 +357,17 @@ def discussion(page: ft.Page, coffee_id: int = 1):
     return ft.View(
         f"/discussion/{coffee['id']}",
         controls=[
-            # Верхняя панель с текстом и кнопкой
+            # Верхняя панель с текстом и кнопкой логина
             header,
 
-            # Чат (занимает все пространство между header и message_field)
+            # Чат
             ft.Container(
                 content=chat,
                 expand=True,
                 padding=ft.padding.symmetric(horizontal=5),
             ),
 
-            # Поле ввода внизу
+            # Поле ввода сообщения внизу
             message_field
         ],
         spacing=0,

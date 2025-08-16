@@ -138,17 +138,35 @@ def login_page(page: ft.Page, redirect_route="/"):
 
             toggle_ui()
             # Перенаправление на сохранённый маршрут
-            target = getattr(page, "redirect_after_login", "/")
-            page.redirect_after_login = "/"
+            target = page.session.get("return_url") or "/"
             page.go(target)
         else:
             print("Login error:", e.error)
 
-    def on_logout(e):
-        print("User logged out")
-        toggle_ui()
+    # def on_logout(e):
+    #     page.logout()
+    #     page.session.set("user", None)
+    #     print("User logged out")
+    #     # toggle_ui()
+    #     # Перенаправляем на предыдущую страницу или на главную
+    #     target = page.session.get("return_url") or "/"
+    #     page.go(target)
 
-    logout_btn.on_click = lambda e: page.logout()
+    def on_logout(e):
+        if page.auth is None:  # Если уже вышли
+            return
+
+        print("Performing logout...")
+        page.logout()  # Основной выход
+        page.session.remove("user")  # Очищаем сессию
+
+        # Редирект с очисткой истории
+        target = page.session.get("return_url") or "/"
+        # page.views.clear()  # Полная очистка истории
+        page.go(target)
+        # toggle_ui()  # Обновляем UI
+
+    logout_btn.on_click = on_logout
     page.on_login = on_login
     page.on_logout = on_logout
     toggle_ui()

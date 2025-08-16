@@ -7,7 +7,7 @@ from fastapi import  FastAPI
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1.endpoints import coffees, users, reviews, comments, auth_test
+from app.api.v1.endpoints import coffees, users, reviews, comments
 
 
 app = FastAPI()  #lifespan=lifespan)

@@ -36,4 +36,5 @@ if __name__ == "__main__":
     if os.getenv("DOCKER_ENV") == "true":
         ft.app(target=main, assets_dir="assets",  view=ft.WEB_BROWSER, port=8550)
     else:
+        print('локальная разработка')
         ft.app(target=main, assets_dir="assets", view=ft.WEB_BROWSER, port=8550)  # AppView.WEB_BROWSER,
