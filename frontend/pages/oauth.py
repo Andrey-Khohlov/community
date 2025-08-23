@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import httpx
 
 from app.config import settings
@@ -74,7 +76,7 @@ def login_page(page: ft.Page, redirect_route="/"):
         logout_btn.visible = is_logged_in
         page.update()
 
-    def check_user(username, email, provider_id, provider):
+    def check_user(user_from_provider):
         # TODO: функция бэкенда
         try:
             user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
@@ -87,11 +89,16 @@ def login_page(page: ft.Page, redirect_route="/"):
             return None
         # Проверяем, находится ли пользователь в базе данных
         for user in user_response.json()["Ok"]:
-            if user["email"] == email:
+            # if user["email"] == email:
+            if user["provider_id"] == user_from_provider['provider_id'] and user["provider"] == user_from_provider['provider']:
                 return user
         else:
             # Если пользователь не найден, добавить его в базу данных
-            user = {"username": username, "email": email, "password": ""}
+            user = user_from_provider.update({
+                "is_active": True,
+                "roles": "user",
+                "last_login": datetime.now().isoformat(),
+            })
             user_response = httpx.post(f"{API_URL}/v1/users/", json=user)
             user_response.raise_for_status()  # Проверяем успешность запроса
 
@@ -107,7 +114,8 @@ def login_page(page: ft.Page, redirect_route="/"):
                 return None
             # Проверяем, находится ли пользователь в базе данных
             for user in user_response.json()["Ok"]:
-                if user["email"] == email:
+                # if user["email"] == email:
+                if user["provider_id"] == user_from_provider['provider_id'] and user["provider"] == user_from_provider['provider']:
                     return user
             else:
                 return None
@@ -118,12 +126,20 @@ def login_page(page: ft.Page, redirect_route="/"):
             print(f"Logged in: {page.auth.user}")
             # TODO: проверить по базе по provider_id, если нет, то добавить
             if isinstance(page.auth.provider, GoogleOAuthProvider):
-                provider = 'Google'
-                username = page.auth.user["given_name"]
-                email = page.auth.user["email"]
-                provider_id = page.auth.user["sub"]
-                user = check_user(username, email, provider_id, provider)
+                print(page.auth.user)
+                user_from_provider = {
+                    'provider': 'Google',
+                    'username': page.auth.user["given_name"],
+                    'email': page.auth.user["email"],
+                    'provider_id': page.auth.user["sub"],
+                    'avatar_url': page.auth.user["picture"],
+                    'is_verified': page.auth.user["email_verified"],
+                    'locality': None,
+                    'language': None,
+                }
+                user = check_user(user_from_provider)
                 page.session.set("user", user)
+
             elif isinstance(page.auth.provider, GitHubOAuthProvider):
                 # TODO: добавить GitHub
                 provider = 'GitHub'

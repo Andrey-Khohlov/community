@@ -35,14 +35,13 @@ class UsersAddModel(Model):
     provider_id: Mapped[Optional[str_256]] = mapped_column(String(256), nullable=True, unique=True)  # ID из соцсети
     avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # аватар из соцсети
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)  # подтвержден ли email
-    locality_user: Mapped[Optional[str_256]] = mapped_column(String(256), nullable=True)  # населённый пункт
+    locality: Mapped[Optional[str_256]] = mapped_column(String(256), nullable=True)  # населённый пункт
     language: Mapped[Optional[str_256]] = mapped_column(String(256), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     roles: Mapped[Optional[str_256]] = mapped_column(String(256), nullable=True)
 
     created_at: Mapped[created_at]
     updated_at: Mapped[updated_at]
-    last_login: Mapped[Optional[updated_at]]
 
     comment: Mapped[list["CommentsAddModel"]] = relationship(
         "CommentsAddModel",

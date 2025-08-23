@@ -124,7 +124,7 @@ sudo systemctl restart nginx
 sudo tail -f /var/log/nginx/error.log
 ```
 логи `/var/log/nginx`
-## Fierwall
+## Firewall
 ```
 sudo ufw allow 443/tcp
 ```

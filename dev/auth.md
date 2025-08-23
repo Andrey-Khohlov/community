@@ -9,8 +9,61 @@ Authlib
 Консоль Google
 https://console.cloud.google.com/
 
+https://developers.google.com/identity/protocols/oauth2?hl=ru
+https://developers.google.com/identity/openid-connect/openid-connect?hl=ru#obtainuserinfo
+
+{'sub': '', 
+'name': 'А Х', 
+'given_name': 'А', 
+'family_name': 'Х', 
+'picture': 'https://lh3.googleusercontent.com/', 
+'email': 'example@gmail.com', 
+'email_verified': True}
+
 консоль GitHub
 https://github.com/settings/apps
+
+{'login': '..., 
+'id': ..., 
+'node_id': '...', 
+'avatar_url': 'https://avatars.githubusercontent.com/u/...v=4', 
+'gravatar_id': '', 
+'url': 'https://api.github.com/users/...', 
+'html_url': 'https://github.com/...', 
+'followers_url': 'https://api.github.com/users/.../followers', 
+'following_url': 'https://api.github.com/users/.../following{/other_user}', 
+'gists_url': 'https://api.github.com/users/.../gists{/gist_id}', 
+'starred_url': 'https://api.github.com/users/.../starred{/owner}{/repo}', 
+'subscriptions_url': 'https://api.github.com/users/.../subscriptions', 
+'organizations_url': 'https://api.github.com/users/.../orgs', 
+'repos_url': 'https://api.github.com/users/.../repos', 
+'events_url': 'https://api.github.com/users/.../events{/privacy}', 
+'received_events_url': 'https://api.github.com/users/.../received_events', 
+'type': 'User', 
+'user_view_type': 'private', 
+'site_admin': False, 
+'name': 'A', 
+'company': None, 
+'blog': '', 
+'location': 'Moscow, Some_City', 
+'email': 'example@ya.ru', 
+'hireable': True, 
+'bio': None, 
+'twitter_username': None, 
+'notification_email': 'example@ya.ru', 
+'public_repos': 12, 
+'public_gists': 0, 
+'followers': 0, 
+'following': 2, 
+'created_at': '2021-08-24T04:56:43Z', 
+'updated_at': '2025-08-10T21:29:30Z', 
+'private_gists': 0, 
+'total_private_repos': 2, 
+'owned_private_repos': 2, 
+'disk_usage': 57373, 
+'collaborators': 0, 
+'two_factor_authentication': True, 
+'plan': {'name': 'free', 'space': 976562499, 'collaborators': 0, 'private_repos': 10000}}
 
 ### как правильно построить авторизацию через Google
 [Пользователь] 
