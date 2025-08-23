@@ -251,7 +251,7 @@ def discussion(page: ft.Page, coffee_id: int = 1):
                     padding=ft.padding.only(right=5),  # Отступ между полем и кнопкой
                 ),
                 ft.IconButton(
-                    icon=ft.icons.SEND_ROUNDED,
+                    icon=ft.Icons.SEND_ROUNDED,
                     tooltip="Опубликовать сообщение",
                     on_click=send_click,
                     # height=40,  # Фиксированная высота кнопки
