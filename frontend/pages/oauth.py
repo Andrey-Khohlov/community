@@ -1,13 +1,18 @@
+import json
+import logging
 from datetime import datetime
 
 import httpx
 
+from app.api.v1.endpoints.users import add_user
 from app.config import settings
 import flet as ft
 from flet.auth.providers import GoogleOAuthProvider, GitHubOAuthProvider
 
+from app.schemas.users import UsersAddSchema
 from . import API_URL
 
+# logging.basicConfig(level=logging.DEBUG)
 
 def login_page(page: ft.Page, redirect_route="/"):
     # Настройка провайдеров
@@ -76,8 +81,22 @@ def login_page(page: ft.Page, redirect_route="/"):
         logout_btn.visible = is_logged_in
         page.update()
 
-    def check_user(user_from_provider):
+    def check_user(user_from_provider: dict):
+        # user_from_provider = {
+        #     "username": "google_user",
+        #     "email": None,
+        #     "password": None,
+        #     "provider": "google",
+        #     "provider_id": "1234567890",
+        #     "avatar_url": "https://example.com/avatar.jpg",
+        #     "is_verified": True,
+        #     "locality": "New York",
+        #     "language": "en",
+        #     "is_active": True,
+        #     "roles": "user"
+        # }
         # TODO: функция бэкенда
+        # TODO Неча таскать пользователей из базы, надо туда запрос отправлять
         try:
             user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
             user_response.raise_for_status()  # Проверяем успешность запроса
@@ -89,17 +108,14 @@ def login_page(page: ft.Page, redirect_route="/"):
             return None
         # Проверяем, находится ли пользователь в базе данных
         for user in user_response.json()["Ok"]:
-            # if user["email"] == email:
-            if user["provider_id"] == user_from_provider['provider_id'] and user["provider"] == user_from_provider['provider']:
+            if user["provider_id"] == user_from_provider["provider_id"] and user["provider"] == user_from_provider["provider"]:
                 return user
         else:
             # Если пользователь не найден, добавить его в базу данных
-            user = user_from_provider.update({
-                "is_active": True,
-                "roles": "user",
-                "last_login": datetime.now().isoformat(),
-            })
-            user_response = httpx.post(f"{API_URL}/v1/users/", json=user)
+            user_from_provider.update({"is_active": True, "roles": "user"})
+            logging.debug(f'Добавляем в базу user_from_provider: {user_from_provider}')
+            print('Добавляем в базу user_from_provider:', user_from_provider)
+            user_response = httpx.post(f"{API_URL}/v1/users/", json=user_from_provider)
             user_response.raise_for_status()  # Проверяем успешность запроса
 
             # получим этого пользователя из базы, чтобы передать его дальше
@@ -124,29 +140,39 @@ def login_page(page: ft.Page, redirect_route="/"):
     def on_login(e: ft.LoginEvent):
         if not e.error:
             print(f"Logged in: {page.auth.user}")
-            # TODO: проверить по базе по provider_id, если нет, то добавить
+            # проверяет по базе по provider_id, если нет, то добавляет
             if isinstance(page.auth.provider, GoogleOAuthProvider):
-                print(page.auth.user)
                 user_from_provider = {
-                    'provider': 'Google',
-                    'username': page.auth.user["given_name"],
-                    'email': page.auth.user["email"],
-                    'provider_id': page.auth.user["sub"],
-                    'avatar_url': page.auth.user["picture"],
-                    'is_verified': page.auth.user["email_verified"],
-                    'locality': None,
-                    'language': None,
+                    "provider": 'google',
+                    "username": page.auth.user["given_name"],
+                    "email": page.auth.user["email"],
+                    "password": None,
+                    "provider_id": page.auth.user["sub"],
+                    "avatar_url": page.auth.user["picture"],
+                    "is_verified": page.auth.user["email_verified"],
+                    "locality": None,
+                    "language": None,
+                    # "is_active": True,
+                    # "roles": "user",
                 }
                 user = check_user(user_from_provider)
                 page.session.set("user", user)
 
             elif isinstance(page.auth.provider, GitHubOAuthProvider):
-                # TODO: добавить GitHub
-                provider = 'GitHub'
-                username = page.auth.user["login"]
-                email = page.auth.user["email"]
-                provider_id = page.auth.user["id"]
-                user = check_user(username, email, provider_id, provider)
+                user_from_provider = {
+                    "provider": 'github',
+                    "username": page.auth.user["name"],
+                    "email": page.auth.user["email"],
+                    "password": None,
+                    "provider_id": str(page.auth.user["id"]),
+                    "avatar_url": page.auth.user["avatar_url"],
+                    "is_verified": True,
+                    "locality": page.auth.user["location"],
+                    "language": None,
+                    # "is_active": True,
+                    # "roles": "user",
+                }
+                user = check_user(user_from_provider)
                 page.session.set("user", user)
 
             else:

@@ -1,8 +1,7 @@
 щас всё решим (админ)
 
 TODO
-обновить базу users - добавить provider_id и другие поля (аватар, город, дата посл входа, что-то еще)
----
+
 back> сделать ручку удаления сообщений пользователями в течение 12 часов.
 ---
 front> сделать форму для добавления кофе
@@ -113,7 +112,11 @@ route_change() вынести app.py
 
 
 YELLOW_DONE_YELLOW
-front> починил логотипы соцсетей Google/GitHub: добавил дир assets в pages
+back> обновить базу users - добавить provider_id и другие поля (аватар, город, дата посл входа, что-то еще), 24.08.2025
+back> INFO  [alembic.runtime.migration] Running upgrade f8bf1ee2b06f -> 40e9d7e9660f, Remove unique constraint at users table
+back> INFO  [alembic.runtime.migration] Running upgrade 40e9d7e9660f -> 2f3d60e51d5b, Add ondelete='CASCADE' at comments table
+---
+front> починил логотипы соцсетей Google/GitHub: добавил дир assets в pages, 16.08.2025
 front> сделано разлогинивание, 16.08.2025
 front> прикрутить регистрацию GitHub, 16.08.2025
 прикручена регистрацию oauth2 + верифиукация по e-mail,  8.08.2025

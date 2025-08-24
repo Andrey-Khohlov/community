@@ -3,18 +3,17 @@ from pydantic import BaseModel
 
 class UsersAddSchema(BaseModel):
     username: str
-    email: str
-    password: str
-    provider: str
-    provider_id: str
-    avatar_url: str
-    is_verified: bool
-    locality: str
-    language: str
+    email: str | None = None
+    password: str | None = None
+    provider: str | None = None
+    provider_id: str | None = None
+    avatar_url: str | None = None
+    is_verified: bool = False
+    locality: str | None = None
+    language: str | None = None
 
-    is_active: bool
-    roles: str
-    last_login: str
+    is_active: bool = True
+    roles: str | None = None
 
 
 class UsersSchema(UsersAddSchema):

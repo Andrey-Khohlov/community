@@ -127,5 +127,6 @@ sudo tail -f /var/log/nginx/error.log
 ## Firewall
 ```
 sudo ufw allow 443/tcp
+udo ufw status
 ```
 

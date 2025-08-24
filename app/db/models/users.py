@@ -11,23 +11,12 @@ if TYPE_CHECKING:
     from app.db.models.comments import CommentsAddModel
 
 
-# class UsersAddModel(Model):
-#     __tablename__: str = "users"
-#     id: Mapped[intpk]
-#     username: Mapped[str_256]
-#     email: Mapped[str]
-#     password: Mapped[str]
-#     created_at: Mapped[created_at]
-#     updated_at: Mapped[updated_at]
-#     comment: Mapped[list["CommentsAddModel"]] = relationship( "CommentsAddModel", back_populates="user", lazy="dynamic", cascade="all, delete, delete-orphan" )
-
-
 class UsersAddModel(Model):
     __tablename__: str = "users"
 
     id: Mapped[intpk]
     username: Mapped[str_256]
-    email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=True)  # ← nullable для OAuth
+    email: Mapped[str] = mapped_column(String, index=True, nullable=True)  # ← nullable для OAuth
     password: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # ← nullable для OAuth
 
     # Новые поля для OAuth

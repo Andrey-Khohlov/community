@@ -55,15 +55,15 @@ https://github.com/settings/apps
 'public_gists': 0, 
 'followers': 0, 
 'following': 2, 
-'created_at': '2021-08-24T04:56:43Z', 
-'updated_at': '2025-08-10T21:29:30Z', 
+'created_at': '2020-08-24T04:56:43Z', 
+'updated_at': '2020-08-10T21:29:30Z', 
 'private_gists': 0, 
 'total_private_repos': 2, 
 'owned_private_repos': 2, 
 'disk_usage': 57373, 
 'collaborators': 0, 
 'two_factor_authentication': True, 
-'plan': {'name': 'free', 'space': 976562499, 'collaborators': 0, 'private_repos': 10000}}
+'plan': {'name': 'free', 'space': 976500099, 'collaborators': 0, 'private_repos': 10000}}
 
 ### как правильно построить авторизацию через Google
 [Пользователь] 

@@ -15,7 +15,7 @@ class CommentsAddModel(Model):
     __tablename__: str = "comments"
     id: Mapped[intpk]
     product_id: Mapped[int]
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete='CASCADE'))
     content: Mapped[str]
     parent_id: Mapped[Optional[int]]
     review_id: Mapped[int]
