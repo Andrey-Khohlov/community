@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -18,5 +20,8 @@ class UsersAddSchema(BaseModel):
 
 class UsersSchema(UsersAddSchema):
     id: int
-    created_at: str
-    updated_at: str
+    created_at: datetime  # str
+    updated_at: datetime  # str
+
+    class Config:
+        from_attributes = True  # Работает как старый orm_mode = True

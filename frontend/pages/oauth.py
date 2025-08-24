@@ -89,45 +89,65 @@ def login_page(page: ft.Page, redirect_route="/"):
         page.update()
 
     def check_user(user_from_provider: dict):
-        # TODO: функция бэкенда
-        # TODO на бэке Неча таскать пользователей из базы, надо туда запрос отправлять
+        """
+        Проверяет существование пользователя в базе по provider и provider_id.
+        Если не найден - создает нового пользователя.
+        Возвращает объект пользователя из БД или None в случае ошибки.
+        """
+        # 1. Пытаемся найти пользователя по provider и provider_id
         try:
-            user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
-            user_response.raise_for_status()  # Проверяем успешность запроса
-        except httpx.RequestError as e:
-            page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
-            return None
+            # Отправляем запрос на поиск пользователя по уникальным параметрам
+            params = {
+                "provider": user_from_provider["provider"],
+                "provider_id": user_from_provider["provider_id"]
+            }
+
+            response = httpx.get(f"{API_URL}/v1/users/get_by_provider", params=params)
+            response.raise_for_status()
+
+            user_data = response.json()
+
+            # Если пользователь найден - возвращаем его
+            if user_data:
+                return user_data
+
         except httpx.HTTPStatusError as e:
-            page.add(ft.Text(f"HTTP Error: {e.response.status_code}", color="red"))
-            return None
-        # Проверяем, находится ли пользователь в базе данных
-        for user in user_response.json()["Ok"]:
-            if user["provider_id"] == user_from_provider["provider_id"] and user["provider"] == user_from_provider["provider"]:
-                return user
-        else:
-            # Если пользователь не найден, добавить его в базу данных
-            user_from_provider.update({"is_active": True, "roles": "user"})
-            logging.info(f'Добавляем в базу user_from_provider: {user_from_provider}')
-            user_response = httpx.post(f"{API_URL}/v1/users/", json=user_from_provider)
-            user_response.raise_for_status()  # Проверяем успешность запроса
-
-            # получим этого пользователя из базы, чтобы передать его дальше
-            try:
-                user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
-                user_response.raise_for_status()  # Проверяем успешность запроса
-            except httpx.RequestError as e:
-                page.add(ft.Text(f"HTTP Request failed: {e}", color="red"))
-                return None
-            except httpx.HTTPStatusError as e:
-                page.add(ft.Text(f"HTTP Error: {e.response.status_code}", color="red"))
-                return None
-            # Проверяем, находится ли пользователь в базе данных
-            for user in user_response.json()["Ok"]:
-                if user["provider_id"] == user_from_provider['provider_id'] and user["provider"] == user_from_provider['provider']:
-                    return user
+            if e.response.status_code == 404:
+                # Пользователь не найден - это нормальная ситуация, продолжаем
+                pass
             else:
+                # Другая ошибка HTTP
+                logging.error(f"HTTP Error while fetching user: {e}")
                 return None
+        except httpx.RequestError as e:
+            logging.error(f"Request failed: {e}")
+            return None
 
+        # 2. Если пользователь не найден - создаем нового
+        try:
+            new_user_data = {
+                "provider": user_from_provider["provider"],
+                "provider_id": user_from_provider["provider_id"],
+                "email": user_from_provider.get("email", ""),
+                "name": user_from_provider.get("name", ""),
+                "picture": user_from_provider.get("picture", ""),
+                "is_active": True,
+                "roles": "user"
+            }
+
+            logging.info(f'Добавляем в базу нового пользователя: {new_user_data}')
+            response = httpx.post(f"{API_URL}/v1/users/", json=new_user_data)
+            response.raise_for_status()
+
+            # Возвращаем созданного пользователя
+            return response.json()
+
+        except httpx.HTTPStatusError as e:
+            logging.error(f"HTTP Error while creating user: {e}")
+            return None
+        except httpx.RequestError as e:
+            logging.error(f"Request failed while creating user: {e}")
+            return None
 
     def on_login(e: ft.LoginEvent):
         if not e.error:
@@ -183,7 +203,6 @@ def login_page(page: ft.Page, redirect_route="/"):
             return
 
         logging.info(f"Performing logout {page.auth}")
-        page.client_storage.remove(AUTH_TOKEN_KEY)
         page.logout()  # Основной выход
         page.session.remove("user")  # Очищаем сессию
 
