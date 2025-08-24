@@ -3,6 +3,7 @@ import logging
 from datetime import datetime
 
 import httpx
+from pygments.styles.dracula import background
 
 from app.api.v1.endpoints.users import add_user
 from app.config import settings
@@ -11,10 +12,14 @@ from flet.auth.providers import GoogleOAuthProvider, GitHubOAuthProvider
 
 from app.schemas.users import UsersAddSchema
 from . import API_URL
+from .discussion import MINOR_COLOR, MAIN_COLOR, FONT_COLOR
+
 
 # logging.basicConfig(level=logging.DEBUG)
 
 def login_page(page: ft.Page, redirect_route="/"):
+    page.clean()
+    page.bgcolor = MINOR_COLOR
     # Настройка провайдеров
     google_provider = GoogleOAuthProvider(
         client_id=settings.OAUTH_GOOGLE_CLIENT_ID,
@@ -52,6 +57,8 @@ def login_page(page: ft.Page, redirect_route="/"):
             spacing=10,
         ),
         width=240,  # Фиксированная ширина
+        bgcolor=MAIN_COLOR,
+        color=FONT_COLOR,
         on_click=lambda e: page.login_async(google_provider, scope=["openid", "email", "profile"])
     )
     login_github_btn = ft.ElevatedButton(
@@ -67,14 +74,17 @@ def login_page(page: ft.Page, redirect_route="/"):
             spacing=10,
         ),
         width=240,  # Фиксированная ширина
+        color=FONT_COLOR,
+        bgcolor=MAIN_COLOR,
         on_click=lambda e: page.login_async(github_provider, scope=["user:email"])
     )
     login_google_btn.on_click = login_google
     login_github_btn.on_click = login_github
 
-    logout_btn = ft.ElevatedButton("Выйти", visible=False)
+    logout_btn = ft.ElevatedButton("Выйти из аккаунта", color=FONT_COLOR, bgcolor=MAIN_COLOR, visible=False)
 
     def toggle_ui():
+        page.bgcolor = MINOR_COLOR
         is_logged_in = page.auth is not None
         login_google_btn.visible = not is_logged_in
         login_github_btn.visible = not is_logged_in
@@ -82,21 +92,8 @@ def login_page(page: ft.Page, redirect_route="/"):
         page.update()
 
     def check_user(user_from_provider: dict):
-        # user_from_provider = {
-        #     "username": "google_user",
-        #     "email": None,
-        #     "password": None,
-        #     "provider": "google",
-        #     "provider_id": "1234567890",
-        #     "avatar_url": "https://example.com/avatar.jpg",
-        #     "is_verified": True,
-        #     "locality": "New York",
-        #     "language": "en",
-        #     "is_active": True,
-        #     "roles": "user"
-        # }
         # TODO: функция бэкенда
-        # TODO Неча таскать пользователей из базы, надо туда запрос отправлять
+        # TODO на бэке Неча таскать пользователей из базы, надо туда запрос отправлять
         try:
             user_response = httpx.get(f"{API_URL}/v1/users", follow_redirects=True)
             user_response.raise_for_status()  # Проверяем успешность запроса
@@ -206,9 +203,12 @@ def login_page(page: ft.Page, redirect_route="/"):
         "/login",
         controls=[
             ft.Column([
-                ft.Text("Авторизоваться:", size=20),
+                ft.Text("Авторизация:", size=20),
                 ft.Column([login_google_btn, login_github_btn], spacing=10, alignment=ft.MainAxisAlignment.START),
                 logout_btn
             ])
-        ]
+        ],
+        vertical_alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        bgcolor=MINOR_COLOR,
     )

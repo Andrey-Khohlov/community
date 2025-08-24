@@ -286,8 +286,9 @@ def discussion(page: ft.Page, coffee_id: int = 1):
     if not page.session.get("user"):
         login_button = ft.ElevatedButton(
             text="Войти",
-            # on_click=lambda e: page.go("/login")
-            on_click=on_login
+            on_click=on_login,
+            color=FONT_COLOR,
+            bgcolor=MAIN_COLOR,
         )
     else:
         login_button = ft.ElevatedButton(

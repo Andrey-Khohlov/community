@@ -1,7 +1,6 @@
-щас всё решим (админ)
 
 TODO
-
+front> Неча таскать пользователей из базы, надо туда запрос отправлять
 back> сделать ручку удаления сообщений пользователями в течение 12 часов.
 ---
 front> сделать форму для добавления кофе
@@ -62,9 +61,9 @@ __
 
 
 TODO FAR FUTURE
+
 front+back: убрать авторизацию с фронта на бэк, см. dev/auth.md
 front: выровнять кнопку профайла пользователя с первыми двумя строками заголовка.
-прикрутить регистрацию oauth - верифиукация по e-mail - как и сколько сохранять ip
 variety добавлять как List Pydantic + ассоциативную таблицу для хранения сортов
 reviews макс рецепт: вода pH GH ppm - тип фильтра - температура - время - ТДС - экстракция - выход - навеска
 проверить восстановление .sql из cron
@@ -113,8 +112,9 @@ route_change() вынести app.py
 
 YELLOW_DONE_YELLOW
 back> обновить базу users - добавить provider_id и другие поля (аватар, город, дата посл входа, что-то еще), 24.08.2025
-back> INFO  [alembic.runtime.migration] Running upgrade f8bf1ee2b06f -> 40e9d7e9660f, Remove unique constraint at users table
-back> INFO  [alembic.runtime.migration] Running upgrade 40e9d7e9660f -> 2f3d60e51d5b, Add ondelete='CASCADE' at comments table
+back> INFO  [alembic.runtime.migration] Running upgrade f8bf1ee2b06f -> 40e9d7e9660f, Remove unique constraint at users table, 24.08.2025
+back> INFO  [alembic.runtime.migration] Running upgrade 40e9d7e9660f -> 2f3d60e51d5b, Add ondelete='CASCADE' at comments table, 24.08.2025
+прикрутить регистрацию oauth - верифиукация по e-mail - как и сколько сохранять ip, 24.08.2025
 ---
 front> починил логотипы соцсетей Google/GitHub: добавил дир assets в pages, 16.08.2025
 front> сделано разлогинивание, 16.08.2025
