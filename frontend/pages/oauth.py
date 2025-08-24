@@ -18,8 +18,6 @@ from .discussion import MINOR_COLOR, MAIN_COLOR, FONT_COLOR
 # logging.basicConfig(level=logging.DEBUG)
 
 def login_page(page: ft.Page, redirect_route="/"):
-    page.clean()
-    page.bgcolor = MINOR_COLOR
     # Настройка провайдеров
     google_provider = GoogleOAuthProvider(
         client_id=settings.OAUTH_GOOGLE_CLIENT_ID,
@@ -84,7 +82,6 @@ def login_page(page: ft.Page, redirect_route="/"):
     logout_btn = ft.ElevatedButton("Выйти из аккаунта", color=FONT_COLOR, bgcolor=MAIN_COLOR, visible=False)
 
     def toggle_ui():
-        page.bgcolor = MINOR_COLOR
         is_logged_in = page.auth is not None
         login_google_btn.visible = not is_logged_in
         login_github_btn.visible = not is_logged_in
@@ -110,8 +107,7 @@ def login_page(page: ft.Page, redirect_route="/"):
         else:
             # Если пользователь не найден, добавить его в базу данных
             user_from_provider.update({"is_active": True, "roles": "user"})
-            logging.debug(f'Добавляем в базу user_from_provider: {user_from_provider}')
-            print('Добавляем в базу user_from_provider:', user_from_provider)
+            logging.info(f'Добавляем в базу user_from_provider: {user_from_provider}')
             user_response = httpx.post(f"{API_URL}/v1/users/", json=user_from_provider)
             user_response.raise_for_status()  # Проверяем успешность запроса
 
@@ -127,7 +123,6 @@ def login_page(page: ft.Page, redirect_route="/"):
                 return None
             # Проверяем, находится ли пользователь в базе данных
             for user in user_response.json()["Ok"]:
-                # if user["email"] == email:
                 if user["provider_id"] == user_from_provider['provider_id'] and user["provider"] == user_from_provider['provider']:
                     return user
             else:
@@ -136,7 +131,9 @@ def login_page(page: ft.Page, redirect_route="/"):
 
     def on_login(e: ft.LoginEvent):
         if not e.error:
-            print(f"Logged in: {page.auth.user}")
+            # отправить токен на бэк, в ответ получить имя, аватар, id
+            # id, avatar, user_name = check_user(page.auth.token)
+
             # проверяет по базе по provider_id, если нет, то добавляет
             if isinstance(page.auth.provider, GoogleOAuthProvider):
                 user_from_provider = {
@@ -171,7 +168,6 @@ def login_page(page: ft.Page, redirect_route="/"):
                 }
                 user = check_user(user_from_provider)
                 page.session.set("user", user)
-
             else:
                 print("Login provider not implemented")
 
@@ -186,7 +182,8 @@ def login_page(page: ft.Page, redirect_route="/"):
         if page.auth is None:  # Если уже вышли
             return
 
-        print("Performing logout...")
+        logging.info(f"Performing logout {page.auth}")
+        page.client_storage.remove(AUTH_TOKEN_KEY)
         page.logout()  # Основной выход
         page.session.remove("user")  # Очищаем сессию
 
