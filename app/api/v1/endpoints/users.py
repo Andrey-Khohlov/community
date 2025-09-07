@@ -5,7 +5,7 @@ from sqlalchemy import select
 
 from app.db.models.users import UsersAddModel
 from app.db.sessions import SessionDep
-from app.schemas.users import UsersAddSchema, UsersSchema
+from app.schemas.users import UsersAddSchema, UsersResponseSchema
 from app.services import user_service
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -18,7 +18,8 @@ async def add_user(user: UsersAddSchema, session: SessionDep):
     logging.debug('add_user', new_user)
     session.add(new_user)
     await session.commit()
-    return {"Ok": True}
+    await session.refresh(new_user)  # Обновляем объект из базы. Теперь объект содержит все данные из базы
+    return UsersResponseSchema.model_validate(new_user)
 
 @router.get("/")
 async def get_user(session: SessionDep):
@@ -31,6 +32,5 @@ async def get_user_by_provider(session: SessionDep, provider: str, provider_id: 
     user = await user_service.get_user_by_provider(session, provider, provider_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    u = UsersSchema.model_validate(user)
-    logging.debug(f'get_user_by_provider {u}')
-    return u
+    logging.debug(f'get_user_by_provider {UsersResponseSchema.model_validate(user)}')
+    return UsersResponseSchema.model_validate(user)

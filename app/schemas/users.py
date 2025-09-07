@@ -25,3 +25,13 @@ class UsersSchema(UsersAddSchema):
 
     class Config:
         from_attributes = True  # Работает как старый orm_mode = True
+
+
+class UsersResponseSchema(BaseModel):
+    id: int
+    username: str
+    avatar_url: str | None
+    locality: str | None
+
+    class Config:
+        from_attributes = True

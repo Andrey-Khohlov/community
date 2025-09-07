@@ -82,6 +82,7 @@ def get_avatar_color(user_name: str):
     ]
     return colors_lookup[stable_hash(user_name) % len(colors_lookup)]
 
+
 def discussion(page: ft.Page, coffee_id: int = 1):
     page.clean()
     page.horizontal_alignment = ft.CrossAxisAlignment.START  # Выравниваем по левому краю
@@ -282,6 +283,40 @@ def discussion(page: ft.Page, coffee_id: int = 1):
         page.session.set("return_url", page.route)
         page.go("/login")
 
+    def create_login_button(user_data: dict):
+        avatar_url = user_data.get("avatar_url")
+
+        if avatar_url:
+            content = ft.Image(
+                src=avatar_url,
+                width=40,
+                height=40,
+                fit=ft.ImageFit.COVER,
+                border_radius=20,
+                error_content=ft.Text(  # Fallback если изображение не загрузится
+                    get_initials(user_data["username"]),
+                    weight=ft.FontWeight.BOLD,
+                    size=20
+                )
+            )
+        else:
+            content = ft.Text(
+                get_initials(user_data["username"]),
+                weight=ft.FontWeight.BOLD,
+                size=20
+            )
+
+        return ft.ElevatedButton(
+            content=content,
+            style=ft.ButtonStyle(
+                color=MAIN_COLOR,
+                bgcolor=get_avatar_color(user_data["username"]),
+                padding=0,
+                shape=ft.CircleBorder(),
+            ),
+            on_click=on_login
+        )
+
     # Кнопка Войти
     if not page.session.get("user"):
         login_button = ft.ElevatedButton(
@@ -291,21 +326,22 @@ def discussion(page: ft.Page, coffee_id: int = 1):
             bgcolor=MAIN_COLOR,
         )
     else:
-        login_button = ft.ElevatedButton(
-            content=ft.Text(
-                get_initials(page.session.get("user")["username"]),
-                weight=ft.FontWeight.BOLD,
-                size=20
-            ),
-            style=ft.ButtonStyle(
-                color=MAIN_COLOR,
-                bgcolor=get_avatar_color(page.session.get("user")["username"]),
-                padding=0,
-                shape=ft.CircleBorder(),  # скругляем под круг
-            ),
-            # on_click=lambda e: page.go("/login")
-            on_click=on_login
-        )
+        login_button = create_login_button(page.session.get("user"))
+        # login_button = ft.ElevatedButton(
+        #     content=ft.Text(
+        #         get_initials(page.session.get("user")["username"]),
+        #         weight=ft.FontWeight.BOLD,
+        #         size=20
+        #     ),
+        #     style=ft.ButtonStyle(
+        #         color=MAIN_COLOR,
+        #         bgcolor=get_avatar_color(page.session.get("user")["username"]),
+        #         padding=0,
+        #         shape=ft.CircleBorder(),  # скругляем под круг
+        #     ),
+        #     # on_click=lambda e: page.go("/login")
+        #     on_click=on_login
+        # )
 
     header = ft.Container(
         content=ft.Stack(

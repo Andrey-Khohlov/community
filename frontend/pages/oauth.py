@@ -139,7 +139,8 @@ def login_page(page: ft.Page, redirect_route="/"):
             response = httpx.post(f"{API_URL}/v1/users/", json=new_user_data)
             response.raise_for_status()
 
-            # Возвращаем созданного пользователя
+            # Возвращаем только нужные поля созданного пользователя
+
             return response.json()
 
         except httpx.HTTPStatusError as e:
